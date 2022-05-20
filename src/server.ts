@@ -9,9 +9,6 @@ import logger from './logger/logger';
 const app = express()
 const gameProviderControllerMappingConfig = require("./config/gameProviderControllerMapping.json");
 
-console.log('====================================');
-console.log(gameProviderControllerMappingConfig);
-console.log('====================================');
 async function start() {
   app.use(jsonParser.json({ limit: "200mb" }));
   app.use(
