@@ -5,12 +5,14 @@ const rgsDatabaseService = require("../db/rgsDatabaseService");
 const TransactionResponse = require("../response/transactionResponse");
 const uuid = require("node-uuid");
 const constants = require("./../../config/constants");
-const logger = require("../../logger/logger");
+import { logger } from '../../logger/logger';
+
+const log = logger(module)
 
 const self = {
   db: mongo.getDB(),
   authenticatePlayer: async (authenticatePlayerRequest: any, additionalParams: any) => {
-    logger.info("rgsService:authenticatePlayer", authenticatePlayerRequest);
+    log.info("rgsService:authenticatePlayer", authenticatePlayerRequest);
     const platformId = authenticatePlayerRequest.platformId;
     const platformService = require(platformServiceMappingConfig[platformId]);
     const authenticatePlayerResponse = await platformService.authenticatePlayer(
@@ -35,7 +37,7 @@ const self = {
   },
 
   transact: async (transactionRequest: any, additionalParams: any) => {
-    logger.info("rgsService:bet", transactionRequest);
+    log.info("rgsService:bet", transactionRequest);
     const playerSession = await rgsDatabaseService.getPlayerSession(
       transactionRequest.token,
       transactionRequest.brand
@@ -152,7 +154,7 @@ const self = {
     return transactionResponse;
   },
   balance: async (transactionRequest: any, additionalParams: any) => {
-    logger.info("rgsService:balance", transactionRequest);
+    log.info("rgsService:balance", transactionRequest);
     if (!transactionRequest.playerId) {
       const playerSession = await rgsDatabaseService.getPlayerSession(
         transactionRequest.token,

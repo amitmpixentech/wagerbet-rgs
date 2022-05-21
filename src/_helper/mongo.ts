@@ -1,6 +1,7 @@
 import { MongoClient } from "mongodb";
 const config = require("../config/config.json");
-const logger = require("../logger/logger");
+import { logger } from '../logger/logger';
+const log = logger(module)
 
 
 interface self {
@@ -16,11 +17,11 @@ const self: self = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     }).catch((err) => {
-      logger.error(err);
+      log.error(err);
     });
 
     if (!self.client) {
-      logger.error("Error connecting db");
+      log.error("Error connecting db");
       return;
     }
 

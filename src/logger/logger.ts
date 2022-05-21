@@ -1,20 +1,37 @@
-const { createLogger, format, transports } = require("winston");
-const { combine, timestamp, label, printf, json } = format;
+import winston from "winston"
+import path from 'path'
+const { combine, timestamp, label, printf } = winston.format;
+// @ts-ignore
 
-const loggerInit = () => {
-  return createLogger({
-    level: "info",
-    format: combine(timestamp(), json()),
+const getLabel = function (module: any) {
+  console.log('====================================');
+  console.log(module);
+  console.log('====================================');
+  const parts = module.filename.split(path.sep);
+  return parts[parts.length - 2] + path.sep + parts.pop();
+};
 
-    defaultMeta: { service: "user-service" },
+const customFormat = printf(({ level, message, label, timestamp }) => {
+  if (message && typeof message === "object") {
+    return `${level}: ${timestamp} [${label} - ${message['fn']}()] ${message['text']}`;
+  } else {
+    return `${level}: ${timestamp} [${label}] ${message}`;
+  }
+});
+
+export const logger = function (module: any) {
+  // @ts-ignore
+  return new winston.createLogger({
+
+    format: combine(
+      label({ label: getLabel(module) }),
+      timestamp(),
+      customFormat
+    ),
     transports: [
-      new transports.Console(),
-      new transports.File({
-        filename: "sample.log",
-      }),
-    ],
+      new (winston.transports.File)({ filename: 'combined.log' })
+    ]
   });
 };
-const logger = loggerInit();
 
-export default logger;
+

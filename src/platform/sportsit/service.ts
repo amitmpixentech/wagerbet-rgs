@@ -4,7 +4,8 @@ const config = require("./../../config/config.json");
 import crypto from "crypto";
 const constants = require("./constants.json");
 const gconstants = require("../../config/constants");
-const logger = require("../../logger/logger");
+import { logger } from '../../logger/logger';
+const log = logger(module)
 
 let requestHandler: any;
 if (config.isDev) {
@@ -15,7 +16,7 @@ if (config.isDev) {
 
 const self = {
   authenticatePlayer: async (playerRequest: any, additionalParams: any) => {
-    logger.debug("sportsit:authenticatePlayer", playerRequest);
+    log.debug("sportsit:authenticatePlayer", playerRequest);
     const { token } = playerRequest;
     let response = await new requestHandler({
       path: "authentication",
@@ -33,7 +34,7 @@ const self = {
   },
 
   transact: async (transactionRequest: any, additionalParams: any) => {
-    logger.debug("transactionRequest", transactionRequest);
+    log.debug("transactionRequest", transactionRequest);
     let response;
     const {
       playerId,
@@ -92,7 +93,7 @@ const self = {
   },
 
   balance: async (transactionRequest: any, additionalParams: any) => {
-    logger.debug("transactionRequest", transactionRequest);
+    log.debug("transactionRequest", transactionRequest);
     let response;
     const { playerId } = transactionRequest;
     const timeStamp = new Date().toISOString();
@@ -110,7 +111,7 @@ const self = {
       },
     }).post();
 
-    logger.debug("sportsit:balance", transactionRequest);
+    log.debug("sportsit:balance", transactionRequest);
 
     const transactionResponse = new TransactionResponse(
       response.statusId,

@@ -4,7 +4,8 @@ import jsonParser from "body-parser"
 import _ from "underscore"
 import xmlparser from "express-xml-bodyparser";
 import mongo from "./_helper/mongo"
-import logger from './logger/logger';
+import { logger } from './logger/logger';
+const log = logger(module)
 
 const app = express()
 const gameProviderControllerMappingConfig = require("./config/gameProviderControllerMapping.json");
@@ -39,7 +40,7 @@ async function start() {
   }
 
   const server = app.listen(8081, function () {
-    logger.info("Server listening on port " + 8081);
+    log.info("Server listening on port " + 8081);
   });
 }
 

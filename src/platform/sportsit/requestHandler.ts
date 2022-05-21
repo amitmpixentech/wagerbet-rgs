@@ -1,14 +1,20 @@
 import fetch from "node-fetch";
-import logger from "../../logger/logger";
+import { logger } from './../../logger/logger';
 const constants = require("./constants.json");
+const log = logger(module)
 
-function handleRequest({
+interface _options {
+  [key: string]: any
+}
+
+export function handleRequest({
   path = "",
   baseUrl = "https://dev.platform-pps.sportsit-tech.net/rgs",
   payload,
-}) {
-  logger.info("path", { path });
-  const _options = {};
+}: any) {
+  log.info("path", { path });
+
+  const _options: _options = {};
 
   const _url = (() => {
     let _path = path;
@@ -20,17 +26,17 @@ function handleRequest({
 
   if (payload) {
     _options.body = JSON.stringify(payload);
-    logger.debug("payload", payload);
+    log.debug("payload", payload);
   }
 
-  const _handleError = (error) => {
+  const _handleError = (error: any) => {
     console.error(error);
     throw error;
   };
 
-  const _fetch = async (...args) => {
+  const _fetch = async (...args: any) => {
     try {
-      const response = await fetch(...args);
+      const response = await fetch(...args: any);
       const responseJson = await response.json();
 
       return { ...responseJson };
@@ -53,4 +59,3 @@ function handleRequest({
     });
 }
 
-module.exports = handleRequest;

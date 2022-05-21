@@ -1,7 +1,8 @@
 const AuthenticatePlayerRequest = require("../../rgs/request/authenticatePlayerRequest");
 const TransactionRequest = require("../../rgs/request/transactionRequest");
 const rgsService = require("../../rgs/service/rgsService");
-const logger = require("../../logger/logger");
+import { logger } from '../../logger/logger';
+const log = logger(module)
 
 interface self {
   [key: string]: any
@@ -11,7 +12,7 @@ const self: self = {
     const authenticatePlayerRequest = new AuthenticatePlayerRequest(
       authenticatePlayerInfo
     );
-    logger.debug(
+    log.debug(
       "truewave:requestHandler:authenticatePlayer",
       authenticatePlayerRequest
     );
@@ -27,18 +28,18 @@ const self: self = {
         balance: +(authenticatePlayerResponse.balance / 100).toFixed(2),
       },
     };
-    logger.debug("truewave - response", response);
+    log.debug("truewave - response", response);
     return { ...response };
   },
 
   bet: async (betInfo: any) => {
     const transactionRequest = new TransactionRequest(betInfo);
-    logger.debug("truewave:requestHandler:bet", transactionRequest);
+    log.debug("truewave:requestHandler:bet", transactionRequest);
     const transactionResponse = await rgsService.transact(
       transactionRequest,
       {}
     );
-    logger.debug("truewave - response", transactionResponse);
+    log.debug("truewave - response", transactionResponse);
     var response = {
       ...transactionResponse,
       balance: +(transactionResponse.balance / 100).toFixed(2),
@@ -47,13 +48,13 @@ const self: self = {
         balance: +(transactionResponse.balance / 100).toFixed(2),
       },
     };
-    logger.debug("truewave - response", response);
+    log.debug("truewave - response", response);
     return { ...response };
   },
 
   win: async (winInfo: any) => {
     const transactionRequest = new TransactionRequest(winInfo);
-    logger.debug("truewave:requestHandler:win", transactionRequest);
+    log.debug("truewave:requestHandler:win", transactionRequest);
     const transactionResponse = await rgsService.transact(
       transactionRequest,
       {}
@@ -66,13 +67,13 @@ const self: self = {
         balance: +(transactionResponse.balance / 100).toFixed(2),
       },
     };
-    logger.debug("truewave - response", response);
+    log.debug("truewave - response", response);
     return { ...response };
   },
 
   balance: async (balanceInfo: any) => {
     const transactionRequest = new TransactionRequest(balanceInfo);
-    logger.debug("truewave:requestHandler:balance", transactionRequest);
+    log.debug("truewave:requestHandler:balance", transactionRequest);
     const transactionResponse = await rgsService.balance(
       transactionRequest,
       {}
@@ -85,7 +86,7 @@ const self: self = {
         balance: +(transactionResponse.balance / 100).toFixed(2),
       },
     };
-    logger.debug("truewave - response", response);
+    log.debug("truewave - response", response);
     return { ...response };
   },
 };
