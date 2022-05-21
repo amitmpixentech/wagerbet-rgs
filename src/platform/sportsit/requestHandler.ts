@@ -36,9 +36,10 @@ export function handleRequest({
 
   const _fetch = async (...args: any) => {
     try {
-      const response = await fetch(...args: any);
+      // @ts-ignore
+      const response = await fetch(...args);
       const responseJson = await response.json();
-
+      // @ts-ignore
       return { ...responseJson };
     } catch (error) {
       _handleError(error);
@@ -46,7 +47,7 @@ export function handleRequest({
   };
 
   //POST request to remote service
-
+  // @ts-ignore
   this.post = () =>
     _fetch(_url, {
       ..._options,
