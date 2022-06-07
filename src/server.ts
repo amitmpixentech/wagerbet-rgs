@@ -1,47 +1,59 @@
-import cors from 'cors';
-import express from "express"
-import jsonParser from "body-parser"
-import _ from "underscore"
+import express, { Application } from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import _ from "underscore";
 import xmlparser from "express-xml-bodyparser";
-import mongo from "./_helper/mongo"
-import { logger } from './logger/logger';
-const log = logger(module)
-
-const app = express()
+import compression from "compression";
+import logger from "./logger/logger";
+const log = logger(module);
+import mongo from "./_helper/mongo";
+const rgsDatabaseService = require("./rgs/db/rgsDatabaseService");
 const gameProviderControllerMappingConfig = require("./config/gameProviderControllerMapping.json");
 
-async function start() {
-  app.use(jsonParser.json({ limit: "200mb" }));
-  app.use(
-    jsonParser.urlencoded({
-      limit: "200mb",
-      extended: true,
-    })
-  );
-  app.use(cors);
+class Server {
+    public app: Application;
 
-  app.use(
-    xmlparser({
-      explicitArray: false,
-      trim: true,
-      mergeAttrs: true,
-    })
-  );
+    constructor() {
+        this.app = express();
 
-  await mongo.init();
+        this.configureWebServer();
+        this.configureRoutes();
+        this.configureDB();
+    }
 
-  for (const gameProvider of _.keys(
-    gameProviderControllerMappingConfig.mappings
-  )) {
-    app.use(
-      "/api/" + gameProvider,
-      require(gameProviderControllerMappingConfig.mappings[gameProvider]).default
-    );
-  }
+    private configureWebServer() {
+        this.app.set("port", process.env.PORT || 8080);
+        this.app.use(express.json());
+        this.app.use(express.urlencoded({ extended: false }));
+        this.app.use(compression());
+        this.app.use(cors());
+    }
 
-  const server = app.listen(8081, function () {
-    log.info("Server listening on port " + 8081);
-  });
+    private configureRoutes() {
+        for (const gameProvider of _.keys(
+            gameProviderControllerMappingConfig.mappings
+        )) {
+            this.app.use(
+                "/api/" + gameProvider,
+                require(gameProviderControllerMappingConfig.mappings[gameProvider]).default
+            );
+        }
+    }
+
+    private async configureDB() {
+        await mongo.init();
+    }
+
+    public start() {
+        this.app.listen(this.app.get("port"), () => {
+            log.info(
+                `Platform is running at http://localhost:${this.app.get("port")}`
+            );
+        });
+    }
 }
 
-start();
+const server = new Server();
+
+server.start();
+

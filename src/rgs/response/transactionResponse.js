@@ -1,5 +1,5 @@
 module.exports = class TransactionResponse {
-  constructor(
+  constructor({
     status,
     message,
     playerName,
@@ -7,8 +7,8 @@ module.exports = class TransactionResponse {
     currencyCode,
     rgsTransactionId,
     platformTransactionId,
-    otherParams
-  ) {
+    otherParams,
+  }) {
     this.status = status;
     this.message = message;
     this.playerName = playerName;

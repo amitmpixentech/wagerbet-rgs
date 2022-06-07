@@ -1,64 +1,77 @@
 const AuthenticatePlayerRequest = require("../../rgs/request/authenticatePlayerRequest");
 const TransactionRequest = require("../../rgs/request/transactionRequest");
 const rgsService = require("../../rgs/service/rgsService");
-import { logger } from '../../logger/logger';
-const log = logger(module)
+const checkStatus = require("../../utills/checkStatus");
+import logger from "../../logger/logger";
+const log = logger(module);;
 
-interface self {
-  [key: string]: any
-}
-const self: self = {
-  authenticatePlayer: async (authenticatePlayerInfo: any) => {
+const self = {
+  authenticatePlayer: async (authenticatePlayerInfo: any, additionalParams: any) => {
     const authenticatePlayerRequest = new AuthenticatePlayerRequest(
-      authenticatePlayerInfo
+      authenticatePlayerInfo,
+      additionalParams
     );
-    log.debug(
-      "truewave:requestHandler:authenticatePlayer",
-      authenticatePlayerRequest
-    );
-    const authenticatePlayerResponse = await rgsService.authenticatePlayer(
+
+    log.debug({
+      text: authenticatePlayerRequest,
+      fn: "authenticatePlayer",
+    });
+    const authenticatePlayerResponse = await rgsService.authenticatePlayer({
       authenticatePlayerRequest,
-      {}
-    );
-    var response = {
-      ...authenticatePlayerResponse,
-      balance: +(authenticatePlayerResponse.balance / 100).toFixed(2),
-      otherParams: {
-        ...authenticatePlayerResponse.otherParams,
-        balance: +(authenticatePlayerResponse.balance / 100).toFixed(2),
-      },
-    };
-    log.debug("truewave - response", response);
-    return { ...response };
+      additionalParams,
+    });
+    var response = authenticatePlayerResponse;
+    if (!checkStatus(authenticatePlayerResponse.status)) {
+      response = {
+        ...authenticatePlayerResponse,
+        balance: +(authenticatePlayerResponse["balance"] / 100).toFixed(2),
+        otherParams: {
+          ...authenticatePlayerResponse["otherParams"],
+          balance: +(authenticatePlayerResponse["balance"] / 100).toFixed(2),
+        },
+      };
+      return { ...response };
+    } else {
+      return authenticatePlayerResponse;
+    }
   },
 
-  bet: async (betInfo: any) => {
+  bet: async (betInfo: any, additionalParams: any) => {
     const transactionRequest = new TransactionRequest(betInfo);
-    log.debug("truewave:requestHandler:bet", transactionRequest);
-    const transactionResponse = await rgsService.transact(
+
+    log.debug({
+      text: transactionRequest,
+      fn: "bet",
+    });
+    const transactionResponse = await rgsService.transact({
       transactionRequest,
-      {}
-    );
-    log.debug("truewave - response", transactionResponse);
+      additionalParams,
+    });
     var response = {
       ...transactionResponse,
-      balance: +(transactionResponse.balance / 100).toFixed(2),
+      balance: +(transactionResponse["balance"] / 100).toFixed(2),
       otherParams: {
-        ...transactionResponse.otherParams,
-        balance: +(transactionResponse.balance / 100).toFixed(2),
+        ...transactionResponse["otherParams"],
+        balance: +(transactionResponse["balance"] / 100).toFixed(2),
       },
     };
-    log.debug("truewave - response", response);
+    log.debug({
+      text: response,
+      fn: "bet",
+    });
     return { ...response };
   },
 
   win: async (winInfo: any) => {
     const transactionRequest = new TransactionRequest(winInfo);
-    log.debug("truewave:requestHandler:win", transactionRequest);
-    const transactionResponse = await rgsService.transact(
-      transactionRequest,
-      {}
-    );
+    log.debug({
+      text: transactionRequest,
+      fn: "win",
+    });
+    const transactionResponse = await rgsService.transact({
+      transactionRequest: transactionRequest,
+      additionalParams: {},
+    });
     var response = {
       ...transactionResponse,
       balance: +(transactionResponse.balance / 100).toFixed(2),
@@ -67,28 +80,37 @@ const self: self = {
         balance: +(transactionResponse.balance / 100).toFixed(2),
       },
     };
-    log.debug("truewave - response", response);
+    log.debug({
+      text: response,
+      fn: "win",
+    });
     return { ...response };
   },
 
   balance: async (balanceInfo: any) => {
     const transactionRequest = new TransactionRequest(balanceInfo);
-    log.debug("truewave:requestHandler:balance", transactionRequest);
-    const transactionResponse = await rgsService.balance(
-      transactionRequest,
-      {}
-    );
-    var response = {
-      ...transactionResponse,
-      balance: +(transactionResponse.balance / 100).toFixed(2),
-      otherParams: {
-        ...transactionResponse.otherParams,
-        balance: +(transactionResponse.balance / 100).toFixed(2),
-      },
-    };
-    log.debug("truewave - response", response);
-    return { ...response };
+    log.debug({
+      text: transactionRequest,
+      fn: "balance",
+    });
+    const transactionResponse = await rgsService.balance({
+      transactionRequest: transactionRequest,
+      additionalParams: {},
+    });
+    if (!checkStatus(transactionResponse.status)) {
+      var responseData = {
+        ...transactionResponse,
+        balance: +(transactionResponse["balance"] / 100).toFixed(2),
+        otherParams: {
+          ...transactionResponse["otherParams"],
+          balance: +(transactionResponse["balance"] / 100).toFixed(2),
+        },
+      };
+      return { ...responseData };
+    } else {
+      return transactionResponse;
+    }
   },
 };
 
-export default self;
+module.exports = self;

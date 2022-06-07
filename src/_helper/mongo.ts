@@ -1,18 +1,18 @@
 import { MongoClient } from "mongodb";
 const config = require("../config/config.json");
-import { logger } from '../logger/logger';
+import logger from '../logger/logger';
 const log = logger(module)
 
 
-interface self {
+interface mongo {
   [key: string]: any
 }
 
-const self: self = {
+const mongo: mongo = {
   db: null,
   client: null,
   init: async () => {
-    self.client = await MongoClient.connect(config.mongoDBURL, {
+    mongo.client = await MongoClient.connect(config.mongoDBURL, {
       // @ts-ignore
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -20,15 +20,15 @@ const self: self = {
       log.error(err);
     });
 
-    if (!self.client) {
+    if (!mongo.client) {
       log.error("Error connecting db");
       return;
     }
 
-    self.db = self.client.db(config.mongoDB);
+    mongo.db = mongo.client.db(config.mongoDB);
   },
-  getDB: () => self.db,
-  closeConnection: () => self.client.close(),
+  getDB: () => mongo.db,
+  closeConnection: () => mongo.client.close(),
 };
 
-export default self;
+export default mongo;
