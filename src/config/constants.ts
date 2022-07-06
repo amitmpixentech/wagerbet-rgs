@@ -1,5 +1,5 @@
 module.exports = Object.freeze({
-  0: "truewave",
+  0: "demo",
   demoBalance: 1000000,
   bet: "BET",
   win: "WIN",

@@ -1,5 +1,5 @@
 {
   "mappings": {
-    "truewave": "./gameProvider/truewave/controller"
+    "demo": "./gameProvider/demo/controller"
   }
 }

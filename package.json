@@ -1,16 +1,22 @@
 {
   "name": "wagerbet-rgs",
   "version": "1.0.0",
-  "description": "WagerBet RGS",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/server.js",
-    "dev": "nodemon src/server.ts",
-    "build": "tsc -p ."
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amitmpixentech/wagerbet-rgs.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amitmpixentech/wagerbet-rgs/issues"
+  },
+  "homepage": "https://github.com/amitmpixentech/wagerbet-rgs#readme",
   "dependencies": {
     "@types/node-fetch": "^2.6.1",
     "compression": "^1.7.4",
