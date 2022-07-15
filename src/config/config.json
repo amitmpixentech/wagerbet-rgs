@@ -1,3 +1,5 @@
 {
-  "mongoDBURI": "mongodb+srv://wagerBetDev:QhAGxjaLGDIPanSX@cluster0.21rx2.mongodb.net/?retryWrites=true&w=majority"
+  "mongoDBURL": "mongodb://localhost:27017",
+  "mongoDB": "rgs",
+  "isDev": false
 }
