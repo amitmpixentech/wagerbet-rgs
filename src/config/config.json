@@ -1,4 +1,3 @@
 {
-  "loginJWTExpiry": 60,
   "mongoDBURI": "mongodb+srv://wagerBetDev:QhAGxjaLGDIPanSX@cluster0.21rx2.mongodb.net/?retryWrites=true&w=majority"
 }

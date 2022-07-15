@@ -2,7 +2,12 @@ import express, { Application } from "express";
 import mongoose from "mongoose";
 import compression from "compression";
 import cors from "cors";
-import config from "./_helpers/config.json";
+import config from "./config/config.json";
+import _ from "underscore";
+import { AuthRoutes } from "./routes/auth";
+import gameProviderControllerMappingConfig from "./config/gameProviderControllerMapping.json";
+
+console.log(gameProviderControllerMappingConfig);
 
 import logger from './logger/logger';
 const log = logger(module)
@@ -32,6 +37,17 @@ class Server {
     }
 
     private configureRoutes() {
+        for (const gameProvider of _.keys(
+            gameProviderControllerMappingConfig.mappings
+        )) {
+            console.log(gameProvider);
+            
+            // this.app.use(
+                // "/api/" + gameProvider,
+                // require(gameProviderControllerMappingConfig.mappings[gameProvider]).default
+            // );
+        }
+
     }
 
     private configureDB() {
