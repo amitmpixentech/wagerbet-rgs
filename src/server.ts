@@ -4,17 +4,12 @@ import compression from "compression";
 import cors from "cors";
 import config from "./config/config.json";
 import _ from "underscore";
-import { AuthRoutes } from "./routes/auth";
 import gameProviderControllerMappingConfig from "./config/gameProviderControllerMapping.json";
-
-console.log(gameProviderControllerMappingConfig);
 
 import logger from './logger/logger';
 const log = logger(module)
 
-
-
-const mongoDBURI = process.env.MONGODB_URI || config.mongoDBURI;
+const mongoDBURI = "mongodb://localhost:27017/myapp";
 
 class Server {
     public app: Application;
@@ -37,15 +32,20 @@ class Server {
     }
 
     private configureRoutes() {
-        for (const gameProvider of _.keys(
+        for (let gameProvider of _.keys(
             gameProviderControllerMappingConfig.mappings
         )) {
-            console.log(gameProvider);
-            
-            // this.app.use(
-                // "/api/" + gameProvider,
-                // require(gameProviderControllerMappingConfig.mappings[gameProvider]).default
-            // );
+            let key = gameProvider as keyof typeof gameProviderControllerMappingConfig.mappings
+
+
+
+            console.log(gameProviderControllerMappingConfig.mappings[key]);
+
+
+            this.app.use(
+                "/api/" + gameProvider,
+                require(gameProviderControllerMappingConfig.mappings[key]).default
+            );
         }
 
     }

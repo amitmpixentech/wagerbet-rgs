@@ -12,7 +12,7 @@ function handleRequest(handleRequest: { path: string; payload: any; }) {
             currencyCode: payload["currencyCode"],
             languageCode: payload["languageCode"],
             message: "string",
-            statusId: 1,
+            statusId: 1000,
             playerId: payload["playerId"],
             userName: payload["playerId"],
           };
@@ -22,7 +22,7 @@ function handleRequest(handleRequest: { path: string; payload: any; }) {
             currencyCode: payload["currencyCode"],
             languageCode: payload["languageCode"],
             message: "string",
-            statusId: 1,
+            statusId: 1000,
             playerId: payload["playerId"],
             userName: payload["playerId"],
           };
@@ -32,7 +32,7 @@ function handleRequest(handleRequest: { path: string; payload: any; }) {
             currencyCode: payload["currencyCode"],
             languageCode: payload["languageCode"],
             message: "string",
-            statusId: 1,
+            statusId: 1000,
             playerId: payload["playerId"],
             userName: payload["playerId"],
           };
@@ -53,7 +53,7 @@ function handleRequest(handleRequest: { path: string; payload: any; }) {
           };
         case "balance":
           return {
-            balance: "",
+            balance: constants["demoBalance"],
             currencyCode: payload["currencyCode"],
             languageCode: payload["languageCode"],
             message: "string",

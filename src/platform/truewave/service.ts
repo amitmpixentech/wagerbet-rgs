@@ -1,8 +1,6 @@
 const AuthenticatePlayerResponse = require("../../rgs/response/authenticatePlayerResponse");
 const TransactionResponse = require("../../rgs/response/transactionResponse");
-const config = require("../../config/config.json");
 const uuid = require("node-uuid");
-const crypto = require("crypto");
 
 let requestHandler = require("./requestHandlerTest");
 import logger from "../../logger/logger";
