@@ -2,15 +2,16 @@ import express, { Request, Response, NextFunction } from 'express';
 const router = express.Router();
 const handler = require("./requestHandler");
 const constants = require("../../config/constants");
-const _gameConstants = require("./constants.json");
-const checkStatus = require("../../utills/checkStatus");
+import _gameConstants from "./constants.json";
+import checkStatus from "../../utills/checkStatus";
 
 router.post("/v2/init", authenticatePlayer);
 router.post("/v2/bet", checkAmount, bet);
 router.post("/v2/win", checkAmount, win);
 router.post("/v2/balance", balance);
 
-export default router;
+
+module.exports = router;
 
 function authenticatePlayer(req: Request, res: Response, next: NextFunction) {
   if (!req?.body?.token) {

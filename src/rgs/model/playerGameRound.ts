@@ -1,23 +1,42 @@
-module.exports = class PlayerGameRound {
+class PlayerGameRound {
+  brand: any;
+  gameCode: any;
+  playerId: any;
+  platformId: any;
+  operatorId: any;
+  aggregatorId: any;
+  providerId: any;
+  roundId: any;
+  startDate: any;
+  endDate: any;
+  status: any;
+  betAmount: any;
+  winAmount: any;
+  jpWinAmount: any;
+  currencyCode: any;
+  transactions: any;
+  region: any;
+  otherParams: any;
+
   constructor({
-    brand,
-    gameCode,
-    playerId,
-    platformId,
-    operatorId,
-    aggregatorId,
-    providerId,
-    roundId,
-    startDate,
-    endDate,
-    status,
-    betAmount,
-    winAmount,
-    jpWinAmount,
-    currencyCode,
-    transactions,
-    region,
-    otherParams,
+    brand = "",
+    gameCode = "",
+    playerId = "",
+    platformId = "",
+    operatorId = "",
+    aggregatorId = "",
+    providerId = "",
+    roundId = "",
+    startDate = "",
+    endDate = "",
+    status = "",
+    betAmount = "",
+    winAmount = "",
+    jpWinAmount = "",
+    currencyCode = "",
+    transactions = "",
+    region = "",
+    otherParams = "",
   }) {
     this.brand = brand;
     this.gameCode = gameCode;
@@ -62,3 +81,4 @@ module.exports = class PlayerGameRound {
     };
   }
 };
+export default PlayerGameRound

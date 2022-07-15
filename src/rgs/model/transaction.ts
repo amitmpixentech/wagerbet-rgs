@@ -1,12 +1,20 @@
-module.exports = class Transaction {
+class Transaction {
+  rgsTransactionId: any;
+  platformTransactionId: any;
+  amount: any;
+  transactionType: any;
+  requestTime: any;
+  responseTime: any;
+  message: any;
+
   constructor({
-    rgsTransactionId,
-    platformTransactionId,
-    amount,
-    transactionType,
-    requestTime,
-    responseTime,
-    message,
+    rgsTransactionId = "",
+    platformTransactionId = "",
+    amount = "",
+    transactionType = "",
+    requestTime = "",
+    responseTime = "",
+    message = "",
   }) {
     this.rgsTransactionId = rgsTransactionId;
     this.platformTransactionId = platformTransactionId;
@@ -29,3 +37,5 @@ module.exports = class Transaction {
     };
   }
 };
+
+export default Transaction

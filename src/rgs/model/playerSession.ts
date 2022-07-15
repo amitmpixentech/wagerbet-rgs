@@ -1,18 +1,32 @@
-module.exports = class PlayerSession {
+class PlayerSession {
+  playerId: any;
+  token: any;
+  brand: any;
+  playerName: any;
+  currencyCode: any;
+  platformId: any;
+  operatorId: any;
+  aggregatorId: any;
+  providerId: any;
+  region: any;
+  balance: any;
+  status: any;
+  otherParams: any;
+
   constructor({
-    playerId,
-    token,
-    brand,
-    playerName,
-    currencyCode,
-    platformId,
-    operatorId,
-    aggregatorId,
-    providerId,
-    region,
-    balance,
-    status,
-    otherParams,
+    playerId = "",
+    token = "",
+    brand = "",
+    playerName = "",
+    currencyCode = "",
+    platformId = "",
+    operatorId = "",
+    aggregatorId = "",
+    providerId = "",
+    region = "",
+    balance = "",
+    status = "",
+    otherParams = "",
   }) {
     this.playerId = playerId;
     this.token = token;
@@ -47,3 +61,5 @@ module.exports = class PlayerSession {
     };
   }
 };
+
+export default PlayerSession;

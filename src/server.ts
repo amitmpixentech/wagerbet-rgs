@@ -36,15 +36,9 @@ class Server {
             gameProviderControllerMappingConfig.mappings
         )) {
             let key = gameProvider as keyof typeof gameProviderControllerMappingConfig.mappings
-
-
-
-            console.log(gameProviderControllerMappingConfig.mappings[key]);
-
-
             this.app.use(
                 "/api/" + gameProvider,
-                require(gameProviderControllerMappingConfig.mappings[key]).default
+                require(gameProviderControllerMappingConfig.mappings[key])
             );
         }
 

@@ -1,15 +1,15 @@
 import mongo from "../../_helper/mongo";
-const platformServiceMappingConfig = require("../../config/platformServiceMapping.json");
-const PlayerSession = require("../model/playerSession");
+import platformServiceMappingConfig from "../../config/platformServiceMapping.json";
+import PlayerSession from "../model/playerSession";
+import TransactionResponse from "../response/transactionResponse";
 const rgsDatabaseService = require("../db/rgsDatabaseService");
-const TransactionResponse = require("../response/transactionResponse");
 const uuid = require("node-uuid");
 const constants = require("./../../config/constants");
-const checkStatus = require("../../utills/checkStatus");
+import checkStatus from "../../utills/checkStatus";
 import logger from "./../../logger/logger";
 const log = logger(module);
 
-const self = {
+const rgsService = {
     db: mongo.getDB(),
     authenticatePlayer: async (authRequestData: { authenticatePlayerRequest: any; additionalParams: any; }) => {
         const {
@@ -22,7 +22,8 @@ const self = {
         });
 
         const platformId = constants[authenticatePlayerRequest["platformId"]];
-        const platformService = require(platformServiceMappingConfig[platformId]);
+        const _platformId = platformId as keyof typeof platformServiceMappingConfig
+        const platformService = require(platformServiceMappingConfig[_platformId]);
         const authenticatePlayerResponse = await platformService.authenticatePlayer(
             {
                 authenticatePlayerRequest,
@@ -76,7 +77,7 @@ const self = {
             fn: "transact",
         });
 
-        const playerSession = await self.getPlayerSession(transactionRequest);
+        const playerSession = await rgsService.getPlayerSession(transactionRequest);
 
         if (checkStatus(playerSession.status) || !playerSession.data) {
             const transactionResponse = new TransactionResponse({
@@ -86,14 +87,14 @@ const self = {
             return transactionResponse;
         }
 
-        const _transactionRequest = await self.updateTransactionRequest({
+        const _transactionRequest = await rgsService.updateTransactionRequest({
             transactionRequest,
             playerSession,
         });
 
         const rgsTransactionId = uuid.v4();
 
-        const transactionRecord = await self.recordTransaction({
+        const transactionRecord = await rgsService.recordTransaction({
             transactionRequest: _transactionRequest,
             playerSession: playerSession,
             rgsTransactionId: rgsTransactionId,
@@ -105,19 +106,20 @@ const self = {
             return transactionResponse;
         }
         const platformId = constants[_transactionRequest["platformId"]];
-        const platformService = require(platformServiceMappingConfig[platformId]);
+        const _platformId = platformId as keyof typeof platformServiceMappingConfig
+        const platformService = require(platformServiceMappingConfig[_platformId]);
         const transactionResponse = await platformService.transact(
             _transactionRequest,
             additionalParams
         );
 
-        const _updateTransaction = await self.updateTransaction({
+        const _updateTransaction = await rgsService.updateTransaction({
             transactionRequest: _transactionRequest,
             rgsTransactionId: rgsTransactionId,
             playerSession: playerSession,
             transactionResponse: transactionResponse,
         });
-        if (checkStatus(_updateTransaction.self)) {
+        if (checkStatus(_updateTransaction.rgsService)) {
             return _updateTransaction;
         }
 
@@ -238,7 +240,7 @@ const self = {
             fn: "balance",
         });
         if (!transactionRequest["playerId"]) {
-            const _playerSession = await self.getPlayerSession(transactionRequest);
+            const _playerSession = await rgsService.getPlayerSession(transactionRequest);
             if (
                 _playerSession.status === constants["DB_ERROR"] ||
                 !_playerSession["data"]
@@ -249,7 +251,8 @@ const self = {
         }
 
         const platformId = constants[transactionRequest["platformId"]];
-        const platformService = require(platformServiceMappingConfig[platformId]);
+        const _platformId = platformId as keyof typeof platformServiceMappingConfig
+        const platformService = require(platformServiceMappingConfig[_platformId]);
         const transactionResponse = await platformService.balance({
             transactionRequest: transactionRequest,
             additionalParams: additionalParams,
@@ -287,4 +290,4 @@ const self = {
     },
 };
 
-module.exports = self;
+export default rgsService;

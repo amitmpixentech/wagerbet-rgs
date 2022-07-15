@@ -1,5 +1,0 @@
-{
-    "INVALID_TOKEN": "Token invalid.",
-    "INVALID_PKT": "Invalid PKT. Method element expected",
-    "INVALID_AMOUNT": "Amount Should be Number"
-}

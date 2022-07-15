@@ -1,6 +1,6 @@
-const AuthenticatePlayerRequest = require("../../rgs/request/authenticatePlayerRequest");
-const TransactionRequest = require("../../rgs/request/transactionRequest");
-const rgsService = require("../../rgs/service/rgsService");
+import AuthenticatePlayerRequest from "./../../rgs/request/authenticatePlayerRequest";
+import TransactionRequest from "../../rgs/request/transactionRequest";
+import rgsService from "../../rgs/service/rgsService";
 const checkStatus = require("../../utills/checkStatus");
 import logger from "../../logger/logger";
 const log = logger(module);;
@@ -8,8 +8,10 @@ const log = logger(module);;
 const self = {
   authenticatePlayer: async (authenticatePlayerInfo: any, additionalParams: any) => {
     const authenticatePlayerRequest = new AuthenticatePlayerRequest(
-      authenticatePlayerInfo,
-      additionalParams
+      {
+        ...authenticatePlayerInfo,
+        ...additionalParams
+      }
     );
 
     log.debug({
