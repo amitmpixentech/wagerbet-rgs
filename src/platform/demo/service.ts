@@ -1,8 +1,9 @@
-const AuthenticatePlayerResponse = require("../../rgs/response/authenticatePlayerResponse");
+import AuthenticatePlayerResponse from "../../rgs/response/authenticatePlayerResponse";
 const TransactionResponse = require("../../rgs/response/transactionResponse");
 const uuid = require("node-uuid");
 
 let requestHandler = require("./requestHandlerTest");
+const constants = require("../../config/constants");
 import logger from "../../logger/logger";
 const log = logger(module);;
 
@@ -22,15 +23,17 @@ const self = {
       path: "authentication",
       payload: { token, currencyCode, languageCode, playerId },
     }).post();
-    const authenticatePlayerResponse = new AuthenticatePlayerResponse(
-      1,
-      response.playerId,
-      response.userName,
-      response.currencyCode,
-      response.balance,
-      response
-    );
-    return authenticatePlayerResponse;
+
+    const _authenticatePlayerResponse = new AuthenticatePlayerResponse({
+      status: "1000",
+      message: "",
+      playerId: playerId,
+      playerName: playerId,
+      currencyCode: currencyCode,
+      balance: constants["demoBalance"],
+      otherParams: response,
+    });
+    return _authenticatePlayerResponse;;
   },
 
   transact: async (transactionRequest: { playerId: any; token: any; transactionId: any; amount: any; gameCode: any; roundId: any; currencyCode: any; transactionType: any; referenceTransactionId: any; }, additionalParams: any) => {
@@ -91,7 +94,7 @@ const self = {
     }
 
     const transactionResponse = new TransactionResponse({
-      status: 1,
+      status: 1000,
       message: response.message,
       playerName: response.playerName,
       balance: response.balance,
@@ -124,7 +127,7 @@ const self = {
     });
 
     const transactionResponse = new TransactionResponse({
-      status: 1,
+      status: 1000,
       message: response.message,
       playerName: response.userName,
       balance: response.balance,

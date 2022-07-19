@@ -22,7 +22,11 @@ const rgsService = {
         });
 
         const platformId = constants[authenticatePlayerRequest["platformId"]];
+        console.log("platformId", platformId);
+
         const _platformId = platformId as keyof typeof platformServiceMappingConfig
+        console.log("_platformId", _platformId);
+
         const platformService = require(platformServiceMappingConfig[_platformId]);
         const authenticatePlayerResponse = await platformService.authenticatePlayer(
             {
@@ -30,6 +34,12 @@ const rgsService = {
                 additionalParams,
             }
         );
+
+        console.log("authenticatePlayerResponse", authenticatePlayerResponse);
+
+        console.log(authenticatePlayerResponse.status);
+        
+        console.log(checkStatus(authenticatePlayerResponse.status));
 
         if (checkStatus(authenticatePlayerResponse.status)) {
             return {

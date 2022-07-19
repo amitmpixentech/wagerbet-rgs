@@ -57,6 +57,9 @@ function authenticatePlayer(req: Request, res: Response, next: NextFunction) {
     )
     .then((response: { status: any; message: any; }) => {
       res.header("Content-Type", "application/json");
+      console.log('====================================');
+      console.log(response);
+      console.log('====================================');
       if (checkStatus(response?.status)) {
         res.status(400).send({ message: response.message });
       } else {

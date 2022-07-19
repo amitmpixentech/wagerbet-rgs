@@ -1,7 +1,7 @@
 import AuthenticatePlayerRequest from "./../../rgs/request/authenticatePlayerRequest";
 import TransactionRequest from "../../rgs/request/transactionRequest";
 import rgsService from "../../rgs/service/rgsService";
-const checkStatus = require("../../utills/checkStatus");
+import checkStatus from "../../utills/checkStatus";
 import logger from "../../logger/logger";
 const log = logger(module);;
 
