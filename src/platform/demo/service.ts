@@ -1,4 +1,4 @@
-import AuthenticatePlayerResponse from "../../rgs/response/authenticatePlayerResponse";
+import AuthenticatePlayerResponse from "../../model/response/authenticatePlayerResponse";
 const TransactionResponse = require("../../rgs/response/transactionResponse");
 const uuid = require("node-uuid");
 
@@ -7,18 +7,21 @@ const constants = require("../../config/constants");
 import logger from "../../logger/logger";
 const log = logger(module);;
 
-const self = {
-  authenticatePlayer: async (authenticatePlayer: { authenticatePlayerRequest: any; additionalParams: any; }) => {
-    const {
-      authenticatePlayerRequest,
-      additionalParams,
-    } = authenticatePlayer
+class Service {
+
+  constructor() {
+
+  }
+
+  public async authenticatePlayer(authenticatePlayerRequest: any, additionalParams: any) {
     log.info({
       text: authenticatePlayerRequest,
       fn: "authenticatePlayer",
     });
+
     const { token } = authenticatePlayerRequest;
     const { currencyCode, languageCode, playerId } = additionalParams;
+
     let response = requestHandler({
       path: "authentication",
       payload: { token, currencyCode, languageCode, playerId },
@@ -33,15 +36,18 @@ const self = {
       balance: constants["demoBalance"],
       otherParams: response,
     });
-    return _authenticatePlayerResponse;;
-  },
 
-  transact: async (transactionRequest: { playerId: any; token: any; transactionId: any; amount: any; gameCode: any; roundId: any; currencyCode: any; transactionType: any; referenceTransactionId: any; }, additionalParams: any) => {
+    return _authenticatePlayerResponse;;
+  }
+
+  public async transact(transactionRequest: { playerId: any; token: any; transactionId: any; amount: any; gameCode: any; roundId: any; currencyCode: any; transactionType: any; referenceTransactionId: any; }, additionalParams: any) {
     log.info({
       text: transactionRequest,
       fn: "transact",
     });
+
     let response;
+
     const {
       playerId,
       token,
@@ -53,6 +59,7 @@ const self = {
       transactionType,
       referenceTransactionId,
     } = transactionRequest;
+
     if (transactionType == "BET") {
       response = requestHandler({
         path: "bet",
@@ -65,6 +72,7 @@ const self = {
         },
       }).post();
     }
+
     if (transactionType == "WIN") {
       response = requestHandler({
         path: "win",
@@ -77,6 +85,7 @@ const self = {
         },
       }).post();
     }
+
     if (transactionType == "REFUND") {
       response = requestHandler({
         path: "refund",
@@ -103,13 +112,16 @@ const self = {
       platformTransactionId: response.platformTransactionId,
       otherParams: response,
     });
+
     log.info({
       text: transactionResponse,
       fn: "transact",
     });
+
     return transactionResponse;
-  },
-  balance: async (transactionRequest: { playerId: any; }, additionalParams: any) => {
+  }
+
+  public async balance(transactionRequest: { playerId: any; }, additionalParams: any) {
     let response;
     const { playerId } = transactionRequest;
 
@@ -121,6 +133,7 @@ const self = {
         playerId,
       },
     }).post();
+
     log.info({
       text: transactionRequest,
       fn: "balance",
@@ -136,13 +149,14 @@ const self = {
       platformTransactionId: response.platformTransactionId,
       otherParams: response,
     });
+
     log.info({
       text: transactionResponse,
       fn: "balance",
     });
 
     return transactionResponse;
-  },
+  }
 };
 
-module.exports = self;
+export default new Service();

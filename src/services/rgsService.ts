@@ -1,28 +1,36 @@
-import mongo from "../../_helper/mongo";
-import platformServiceMappingConfig from "../../config/platformServiceMapping.json";
-import PlayerSession from "../model/playerSession";
-import TransactionResponse from "../response/transactionResponse";
-const rgsDatabaseService = require("../db/rgsDatabaseService");
+import mongo from "../_helper/mongo";
+import platformServiceMappingConfig from "../config/platformServiceMapping.json";
+import PlayerSession from "../model/database/playerSession";
+import TransactionResponse from "../model/response/transactionResponse";
+const rgsDatabaseService = require("./databaseService");
 const uuid = require("node-uuid");
-const constants = require("./../../config/constants");
-import checkStatus from "../../utills/checkStatus";
-import logger from "./../../logger/logger";
+const constants = require("./../config/constants");
+import isInvalidStatus from "../utills/isInvalidStatus";
+import logger from "../logger/logger";
+import dbHelper from "./helper/databaseHelper";
 const log = logger(module);
 
-const rgsService = {
-    db: mongo.getDB(),
-    authenticatePlayer: async (authRequestData: { authenticatePlayerRequest: any; additionalParams: any; }) => {
+class RGSService {
+    db: any;
+
+    constructor() {
+        mongo.getDB();
+    }
+
+    public async authenticatePlayer(authRequestData: { authenticatePlayerRequest: any; additionalParams: any; }) {
         const {
             authenticatePlayerRequest,
             additionalParams,
         } = authRequestData
+
+        log.info("Received Auth Request");
         log.info({
             text: authenticatePlayerRequest,
             fn: "authenticatePlayer",
         });
 
         const platformId = constants[authenticatePlayerRequest["platformId"]];
-        
+
         const _platformId = platformId as keyof typeof platformServiceMappingConfig
 
         const platformService = require(platformServiceMappingConfig[_platformId]);
@@ -33,7 +41,13 @@ const rgsService = {
             }
         );
 
-        if (checkStatus(authenticatePlayerResponse.status)) {
+        log.info("Auth Response");
+        log.info({
+            text: authenticatePlayerResponse,
+            fn: "authenticatePlayer",
+        });
+
+        if (isInvalidStatus(authenticatePlayerResponse.status)) {
             return {
                 status: authenticatePlayerResponse.status,
                 message: authenticatePlayerResponse["otherParams"]["message"],
@@ -60,28 +74,35 @@ const rgsService = {
             playerSession,
         });
 
-        if (checkStatus(_playerSession.status)) {
+        if (isInvalidStatus(_playerSession.status)) {
+            log.info("Error Creating Player Session");
+            log.info({
+                text: _playerSession,
+                fn: "authenticatePlayer",
+            });
             return _playerSession;
         }
 
-        log.info({
-            text: authenticatePlayerResponse,
-            fn: "authenticatePlayer",
-        });
-
         return authenticatePlayerResponse;
-    },
+    }
 
-    transact: async (transactRequestData: { transactionRequest: any; additionalParams: any; }) => {
+    public async transact(transactRequestData: { transactionRequest: any; additionalParams: any; }) {
         const { transactionRequest, additionalParams } = transactRequestData
+        log.info("Received Transact Request");
         log.info({
             text: transactionRequest,
             fn: "transact",
         });
 
-        const playerSession = await rgsService.getPlayerSession(transactionRequest);
+        const playerSession = await this.getPlayerSession(transactionRequest);
 
-        if (checkStatus(playerSession.status) || !playerSession.data) {
+        if (isInvalidStatus(playerSession.status) || !playerSession.data) {
+            log.info("Player Session Not found");
+            log.info({
+                text: playerSession,
+                fn: "transact",
+            });
+
             const transactionResponse = new TransactionResponse({
                 status: constants["USER_SESSION_NOT_EXIST_CODE"],
                 message: constants["USER_SESSION_NOT_EXIST_MESSAGE"],
@@ -89,39 +110,55 @@ const rgsService = {
             return transactionResponse;
         }
 
-        const _transactionRequest = await rgsService.updateTransactionRequest({
+        const _transactionRequest = await this.updateTransactionRequest({
             transactionRequest,
             playerSession,
         });
 
         const rgsTransactionId = uuid.v4();
 
-        const transactionRecord = await rgsService.recordTransaction({
+        const transactionRecord = await dbHelper.recordTransaction({
             transactionRequest: _transactionRequest,
             playerSession: playerSession,
             rgsTransactionId: rgsTransactionId,
         });
 
-        if (checkStatus(transactionRecord.status)) {
+        if (isInvalidStatus(transactionRecord.status)) {
+            log.info("Error creating Transaction Record");
+            log.info({
+                text: transactionRecord,
+                fn: "transact",
+            });
+
             const transactionResponse = new TransactionResponse(transactionRecord);
 
             return transactionResponse;
         }
+
         const platformId = constants[_transactionRequest["platformId"]];
         const _platformId = platformId as keyof typeof platformServiceMappingConfig
         const platformService = require(platformServiceMappingConfig[_platformId]);
+
+        log.info(`Calling provider ${platformId}`);
+
         const transactionResponse = await platformService.transact(
             _transactionRequest,
             additionalParams
         );
 
-        const _updateTransaction = await rgsService.updateTransaction({
+        const _updateTransaction = await dbHelper.updateTransaction({
             transactionRequest: _transactionRequest,
             rgsTransactionId: rgsTransactionId,
             playerSession: playerSession,
             transactionResponse: transactionResponse,
         });
-        if (checkStatus(_updateTransaction.rgsService)) {
+
+        if (isInvalidStatus(_updateTransaction.rgsService)) {
+            log.info("Invalid Transaction Response");
+            log.info({
+                text: _updateTransaction,
+                fn: "transact",
+            });
             return _updateTransaction;
         }
 
@@ -131,7 +168,8 @@ const rgsService = {
                     gameRoundId: _transactionRequest["roundId"],
                     rgsRoundID: uuid.v4(),
                 });
-            if (checkStatus(_recordProviderGameRoundMap.status)) {
+
+            if (isInvalidStatus(_recordProviderGameRoundMap.status)) {
                 // return _recordProviderGameRoundMap;
             }
         }
@@ -154,95 +192,16 @@ const rgsService = {
         });
 
         return transactionResponse;
-    },
+    }
 
-    recordTransaction: async (recordRequest: any) => {
-        const {
-            transactionRequest,
-            playerSession,
-            rgsTransactionId,
-        } = recordRequest
-        let transactionRecordData = {
-            roundId: transactionRequest["roundId"],
-            rgsTransactionId: rgsTransactionId,
-            amount: transactionRequest["amount"],
-            transactionType: transactionRequest["transactionType"],
-            brand: transactionRequest["brand"],
-            gameCode: transactionRequest["gameCode"],
-            playerId: playerSession["data"]["playerId"],
-            platformId: transactionRequest["platformId"],
-            operatorId: transactionRequest["operatorId"],
-            aggregatorId: transactionRequest["aggregatorId"],
-            providerId: transactionRequest["providerId"],
-            currencyCode: transactionRequest["currencyCode"],
-            region: transactionRequest["region"],
-            status: "",
-        };
-
-        if (transactionRequest["transactionType"] == constants["bet"]) {
-            transactionRecordData["status"] = constants["DEBIT_INITIATED_STATUS"];
-        } else if (transactionRequest["transactionType"] == constants["win"]) {
-            transactionRecordData["status"] = constants["CREDIT_INITIATED_STATUS"];
-        } else if (transactionRequest["transactionType"] == constants["refund"]) {
-            transactionRecordData["status"] = constants["ROLLBACK_MANUAL_STATUS"];
-        }
-
-        return await rgsDatabaseService.recordTransaction(transactionRecordData);
-    },
-
-    updateTransaction: async (updateRequest: any) => {
-        const {
-            transactionRequest,
-            rgsTransactionId,
-            playerSession,
-            transactionResponse,
-        } = updateRequest
-        let updateTransactionData = {
-            roundId: transactionRequest["roundId"],
-            rgsTransactionId: rgsTransactionId,
-            brand: transactionRequest["brand"],
-            gameCode: transactionRequest["gameCode"],
-            playerId: playerSession["data"]["playerId"],
-            platformTransactionId: transactionResponse["platformTransactionId"],
-            message: transactionResponse["message"],
-            status: "",
-        };
-
-        switch (transactionRequest["transactionType"]) {
-            case constants["bet"]:
-                checkStatus(transactionResponse["status"])
-                    ? (updateTransactionData["status"] = constants["DEBIT_FAILED_STATUS"])
-                    : (updateTransactionData["status"] =
-                        constants["DEBIT_COMPLETED_STATUS"]);
-                break;
-            case constants["win"]:
-                checkStatus(transactionResponse["status"])
-                    ? (updateTransactionData["status"] =
-                        constants["CREDIT_FAILED_STATUS"])
-                    : (updateTransactionData["status"] =
-                        constants["CREDIT_COMPLETED_STATUS"]);
-                break;
-            case constants["refund"]:
-                checkStatus(transactionResponse["status"])
-                    ? (updateTransactionData["status"] =
-                        constants["ROLLBACK_FAILED_STATUS"])
-                    : (updateTransactionData["status"] =
-                        constants["ROLLBACK_SUCCESS_STATUS"]);
-                break;
-            default:
-        }
-
-        return await rgsDatabaseService.updateTransaction(updateTransactionData);
-    },
-
-    balance: async (balanceRequest: { transactionRequest: any; additionalParams: any; }) => {
+    public async balance(balanceRequest: { transactionRequest: any; additionalParams: any; }) {
         const { transactionRequest, additionalParams } = balanceRequest
         log.info({
             text: transactionRequest,
             fn: "balance",
         });
         if (!transactionRequest["playerId"]) {
-            const _playerSession = await rgsService.getPlayerSession(transactionRequest);
+            const _playerSession = await this.getPlayerSession(transactionRequest);
             if (
                 _playerSession.status === constants["DB_ERROR"] ||
                 !_playerSession["data"]
@@ -265,17 +224,17 @@ const rgsService = {
         });
 
         return transactionResponse;
-    },
+    }
 
-    getPlayerSession: async (playerSessionRequest: { token: any; brand: any; }) => {
+    public async getPlayerSession(playerSessionRequest: { token: any; brand: any; }) {
         const { token, brand } = playerSessionRequest
         return await rgsDatabaseService.getPlayerSession({
             token,
             brand,
         });
-    },
+    }
 
-    updateTransactionRequest: async (updateTransactionRequest: { transactionRequest: any; playerSession: any; }) => {
+    public async updateTransactionRequest(updateTransactionRequest: { transactionRequest: any; playerSession: any; }) {
         const { transactionRequest, playerSession } = updateTransactionRequest
         if (!transactionRequest["playerId"]) {
             transactionRequest["playerId"] = playerSession["data"]["playerId"];
@@ -289,7 +248,7 @@ const rgsService = {
         }
 
         return transactionRequest;
-    },
+    }
 };
 
-export default rgsService;
+export default new RGSService();

@@ -1,18 +1,22 @@
 import { MongoClient } from "mongodb";
-const config = require("../config/config.json");
+import DatabaseInterface from "./databaseInterface";
 import logger from '../logger/logger';
+
+const config = require("../config/config.json");
 const log = logger(module)
 
+class Mongo implements DatabaseInterface {
 
-interface mongo {
-  [key: string]: any
-}
+  db: any;
+  client: any;
 
-const mongo: mongo = {
-  db: null,
-  client: null,
-  init: async () => {
-    mongo.client = await MongoClient.connect(config.mongoDBURL, {
+  constructor() {
+    this.db = null;
+    this.client = null;
+  }
+
+  public async init() {
+    this.client = await MongoClient.connect(config.mongoDBURL, {
       // @ts-ignore
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -20,15 +24,16 @@ const mongo: mongo = {
       log.error(err);
     });
 
-    if (!mongo.client) {
+    if (!this.client) {
       log.error("Error connecting db");
       return;
     }
 
-    mongo.db = mongo.client.db(config.mongoDB);
-  },
-  getDB: () => mongo.db,
-  closeConnection: () => mongo.client.close(),
+    this.db = this.client.db(config.mongoDB);
+  }
+
+  public getDB() { return this.db }
+  public closeConnection() { this.client.close() }
 };
 
-export default mongo;
+export default new Mongo();

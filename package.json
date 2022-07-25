@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/rgs-service.js",
+    "dev": "nodemon src/rgs-service.ts",
+    "build": "tsc -p ."
   },
   "repository": {
     "type": "git",

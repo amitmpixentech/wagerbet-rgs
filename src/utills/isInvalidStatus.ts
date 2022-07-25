@@ -1,6 +1,6 @@
 const _constants = require("../config/constants");
 
-const checkStatus = (status: any) => {
+function isInvalidStatus(status: any) {
   return (
     status == _constants["INSUFFICIENT_FUNDS"] ||
     status == _constants["INVALID_TOKEN"] ||
@@ -14,5 +14,5 @@ const checkStatus = (status: any) => {
     status == _constants["DB_ERROR"] ||
     status == _constants["USER_SESSION_NOT_EXIST_CODE"]
   );
-};
-export default checkStatus;
+}
+export default isInvalidStatus;

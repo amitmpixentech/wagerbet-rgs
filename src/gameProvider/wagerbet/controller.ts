@@ -1,9 +1,10 @@
 import express, { Request, Response, NextFunction } from 'express';
-const router = express.Router();
-const handler = require("./requestHandler");
-const constants = require("../../config/constants");
 import _gameConstants from "./constants.json";
-import checkStatus from "../../utills/checkStatus";
+import isInvalidStatus from "../../utills/isInvalidStatus";
+const handler = require("./requestHandler");
+
+const router = express.Router();
+const constants = require("../../config/constants");
 
 router.post("/v2/init", authenticatePlayer);
 router.post("/v2/bet", checkAmount, bet);
@@ -21,6 +22,7 @@ function authenticatePlayer(req: Request, res: Response, next: NextFunction) {
     res.status(400).send(response);
     return;
   }
+
   if (
     !req?.body?.extraData?.region ||
     isNaN(req?.body?.extraData?.platformId) ||
@@ -37,6 +39,7 @@ function authenticatePlayer(req: Request, res: Response, next: NextFunction) {
     res.status(400).send(response);
     return;
   }
+
   handler
     .authenticatePlayer(
       {
@@ -57,7 +60,7 @@ function authenticatePlayer(req: Request, res: Response, next: NextFunction) {
     )
     .then((response: { status: any; message: any; }) => {
       res.header("Content-Type", "application/json");
-      if (checkStatus(response?.status)) {
+      if (isInvalidStatus(response?.status)) {
         res.status(400).send({ message: response.message });
       } else {
         res.status(200).send(response);
@@ -185,7 +188,7 @@ function win(req: Request, res: Response, next: NextFunction) {
     )
     .then((response: any) => {
       res.header("Content-Type", "application/json");
-      if (checkStatus(response?.status)) {
+      if (isInvalidStatus(response?.status)) {
         res.status(400).send({ message: response.message });
       } else {
         res.status(200).send(response);
@@ -227,7 +230,7 @@ function balance(req: Request, res: Response, next: NextFunction) {
     })
     .then((response: any) => {
       res.header("Content-Type", "application/json");
-      if (checkStatus(response?.status)) {
+      if (isInvalidStatus(response?.status)) {
         res.status(400).send({ message: response.message });
       } else {
         res.status(200).send(response);

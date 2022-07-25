@@ -81,4 +81,5 @@ class PlayerGameRound {
     };
   }
 };
+
 export default PlayerGameRound

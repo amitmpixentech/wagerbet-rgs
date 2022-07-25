@@ -1,5 +1,3 @@
-import { deflateSync } from "zlib";
-
 class TransactionResponse {
   status: any;
   message: any;
@@ -24,4 +22,5 @@ class TransactionResponse {
     this.otherParams = otherParams;
   }
 };
+
 export default TransactionResponse

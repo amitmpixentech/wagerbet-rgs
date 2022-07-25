@@ -25,20 +25,13 @@ class Server {
         this.app.use(express.urlencoded({ extended: false }));
         this.app.use(compression());
         this.app.use(cors());
-
     }
 
     private configureRoutes() {
-        for (let gameProvider of _.keys(
-            gameProviderControllerMappingConfig.mappings
-        )) {
+        for (let gameProvider of _.keys(gameProviderControllerMappingConfig.mappings)) {
             let key = gameProvider as keyof typeof gameProviderControllerMappingConfig.mappings
-            this.app.use(
-                "/api/" + gameProvider,
-                require(gameProviderControllerMappingConfig.mappings[key])
-            );
+            this.app.use("/rgs-api/" + gameProvider, require(gameProviderControllerMappingConfig.mappings[key]));
         }
-
     }
 
     private configureDB() { mongo.init() }
@@ -52,6 +45,4 @@ class Server {
     }
 }
 
-const server = new Server();
-
-server.start();
+export default Server;

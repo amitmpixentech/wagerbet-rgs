@@ -1,12 +1,3 @@
-interface AuthenticatePlayer {
-  status?: any;
-  message?: any,
-  playerId?: any;
-  playerName?: any;
-  currencyCode?: any;
-  balance?: any;
-  otherParams?: any;
-}
 class AuthenticatePlayerResponse implements AuthenticatePlayer {
   status = ""; message = ""; playerId = ""; playerName = ""; currencyCode = ""; balance = ""; otherParams = "";
 

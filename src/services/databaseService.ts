@@ -1,7 +1,7 @@
-import mongo from "../../_helper/mongo";
-const constants = require("../../config/constants");
-const PlayerGameRound = require("../model/playerGameRound");
-const Transaction = require("../model/transaction");
+import mongo from "../_helper/mongo";
+const constants = require("../config/constants");
+const PlayerGameRound = require("../model/database/playerGameRound");
+const Transaction = require("../model/database/transaction");
 
 const self = {
     db: mongo.getDB(),

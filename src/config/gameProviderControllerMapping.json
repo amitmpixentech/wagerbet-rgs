@@ -1,5 +1,5 @@
 {
   "mappings": {
-    "demo": "./gameProvider/demo/controller"
+    "wagerbet": "./gameProvider/wagerbet/controller"
   }
 }

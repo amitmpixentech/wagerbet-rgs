@@ -1,8 +1,6 @@
-import { userInfo } from "os";
-import checkStatus from "../../utills/checkStatus";
+import isInvalidStatus from "../../utills/isInvalidStatus";
 import mongo from "../../_helper/mongo";
 
-const { config } = require("winston");
 const constants = require("../../config/constants");
 
 function handleRequest(handleRequest: { path: string; payload: any; }) {
@@ -10,12 +8,10 @@ function handleRequest(handleRequest: { path: string; payload: any; }) {
   return {
     post: async () => {
       const user = await getUser(payload)
-      console.log('====================================');
-      console.log(user);
-      console.log('====================================');
+      
       switch (path) {
         case "authentication":
-          if (checkStatus(user.status)) {
+          if (isInvalidStatus(user.status)) {
             return {
               balance: "",
               currencyCode: "",
@@ -41,7 +37,7 @@ function handleRequest(handleRequest: { path: string; payload: any; }) {
             userName: payload["playerId"],
           };
         case "bet":
-          if (checkStatus(user.status) || user.data) {
+          if (isInvalidStatus(user.status) || user.data) {
             return {
               balance: "",
               currencyCode: "",
@@ -64,7 +60,7 @@ function handleRequest(handleRequest: { path: string; payload: any; }) {
             userName: payload["playerId"],
           };
         case "win":
-          if (checkStatus(user.status) || user.data) {
+          if (isInvalidStatus(user.status) || user.data) {
             return {
               balance: "",
               currencyCode: "",
@@ -87,7 +83,7 @@ function handleRequest(handleRequest: { path: string; payload: any; }) {
             userName: payload["playerId"],
           };
         case "REFUND":
-          if (checkStatus(user.status) || user.data) {
+          if (isInvalidStatus(user.status) || user.data) {
             return {
               balance: "",
               currencyCode: "",
@@ -176,6 +172,7 @@ async function addUser(payload: { currencyCode?: any; languageCode?: any; player
     return { status: constants["DB_ERROR"], message: error };
   }
 }
+
 async function betWin(payload: { playerId?: any; amount?: any }, user: any) {
   const { playerId, amount } = payload
   try {
@@ -201,4 +198,5 @@ async function betWin(payload: { playerId?: any; amount?: any }, user: any) {
     return { status: constants["DB_ERROR"], message: error };
   }
 }
+
 module.exports = handleRequest;
