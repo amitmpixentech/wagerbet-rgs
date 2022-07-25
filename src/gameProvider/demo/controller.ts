@@ -67,6 +67,9 @@ function authenticatePlayer(req: Request, res: Response, next: NextFunction) {
 }
 
 function checkAmount(req: Request, res: Response, next: NextFunction) {
+  console.log('====================================');
+  console.log("AAAAAAAAAAAAAAAAAAA");
+  console.log('====================================');
   if (isNaN(+req?.body?.amount)) {
     const response = {
       message: _gameConstants["INVALID_AMOUNT"],
@@ -78,6 +81,9 @@ function checkAmount(req: Request, res: Response, next: NextFunction) {
 }
 
 function bet(req: Request, res: Response, next: NextFunction) {
+  console.log('====================================');
+  console.log("+++++++++++++++");
+  console.log('====================================');
   if (
     !req?.body?.token ||
     !req?.body?.amount ||
@@ -90,44 +96,50 @@ function bet(req: Request, res: Response, next: NextFunction) {
     isNaN(req?.body?.extraData?.platformId) ||
     !req?.body?.extraData?.operatorId
   ) {
+    console.log('====================================');
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    console.log('====================================');
     const response = {
       message: _gameConstants["INVALID_PKT"],
     };
     res.status(400).send(response);
     return;
   }
+  console.log('====================================');
+  console.log("+++++++++++++++");
+  console.log('====================================');
 
-  handler
-    .bet(
-      {
-        playerId: req?.body?.extraData?.playerId,
-        token: req?.body?.token,
-        brand: req?.body?.extraData?.brand,
-        transactionId: req?.body?.transactionId,
-        amount: req?.body?.amount * 100,
-        gameCode: req?.body?.extraData?.gameCode,
-        currencyCode: req?.body?.extraData?.currencyCode,
-        roundId: req?.body?.roundId,
-        platformId: req?.body?.extraData?.platformId,
-        operatorId: req?.body?.extraData?.operatorId,
-        aggregatorId: "",
-        providerId: "",
-        transactionType: constants?.bet,
-        referenceTransactionId: "",
-      },
-      {
-        language: req?.body?.extraData?.language,
-      }
-    )
-    .then((response: any) => {
-      res.header("Content-Type", "application/json");
-      if (checkStatus(response?.status)) {
-        res.status(400).send({ message: response.message });
-      } else {
-        res.status(200).send(response);
-      }
-    })
-    .catch((err: any) => next(err));
+  // handler
+  //   .bet(
+  //     {
+  //       playerId: req?.body?.extraData?.playerId,
+  //       token: req?.body?.token,
+  //       brand: req?.body?.extraData?.brand,
+  //       transactionId: req?.body?.transactionId,
+  //       amount: req?.body?.amount * 100,
+  //       gameCode: req?.body?.extraData?.gameCode,
+  //       currencyCode: req?.body?.extraData?.currencyCode,
+  //       roundId: req?.body?.roundId,
+  //       platformId: req?.body?.extraData?.platformId,
+  //       operatorId: req?.body?.extraData?.operatorId,
+  //       aggregatorId: "",
+  //       providerId: "",
+  //       transactionType: constants?.bet,
+  //       referenceTransactionId: "",
+  //     },
+  //     {
+  //       language: req?.body?.extraData?.language,
+  //     }
+  //   )
+  //   .then((response: any) => {
+  //     res.header("Content-Type", "application/json");
+  //     if (checkStatus(response?.status)) {
+  //       res.status(400).send({ message: response.message });
+  //     } else {
+  //       res.status(200).send(response);
+  //     }
+  //   })
+  //   .catch((err: any) => next(err));
 }
 
 function win(req: Request, res: Response, next: NextFunction) {

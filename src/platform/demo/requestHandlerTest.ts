@@ -1,3 +1,4 @@
+import { userInfo } from "os";
 import checkStatus from "../../utills/checkStatus";
 import mongo from "../../_helper/mongo";
 
@@ -8,9 +9,12 @@ function handleRequest(handleRequest: { path: string; payload: any; }) {
   const { path, payload } = handleRequest
   return {
     post: async () => {
+      const user = await getUser(payload)
+      console.log('====================================');
+      console.log(user);
+      console.log('====================================');
       switch (path) {
         case "authentication":
-          const user = await getUser(payload)
           if (checkStatus(user.status)) {
             return {
               balance: "",
@@ -37,8 +41,21 @@ function handleRequest(handleRequest: { path: string; payload: any; }) {
             userName: payload["playerId"],
           };
         case "bet":
+          if (checkStatus(user.status) || user.data) {
+            return {
+              balance: "",
+              currencyCode: "",
+              languageCode: "",
+              message: "User Not found",
+              statusId: 1001,
+              playerId: "",
+              userName: "",
+            };
+          }
+          await betWin(payload, user)
+          var updateUser: any = await getUser(payload)
           return {
-            balance: "",
+            balance: updateUser.data.balance,
             currencyCode: payload["currencyCode"],
             languageCode: payload["languageCode"],
             message: "",
@@ -47,8 +64,21 @@ function handleRequest(handleRequest: { path: string; payload: any; }) {
             userName: payload["playerId"],
           };
         case "win":
+          if (checkStatus(user.status) || user.data) {
+            return {
+              balance: "",
+              currencyCode: "",
+              languageCode: "",
+              message: "User Not found",
+              statusId: 1001,
+              playerId: "",
+              userName: "",
+            };
+          }
+          await betWin(payload, user)
+          var updateUser: any = await getUser(payload)
           return {
-            balance: "",
+            balance: updateUser.data.balance,
             currencyCode: payload["currencyCode"],
             languageCode: payload["languageCode"],
             message: "",
@@ -57,8 +87,21 @@ function handleRequest(handleRequest: { path: string; payload: any; }) {
             userName: payload["playerId"],
           };
         case "REFUND":
+          if (checkStatus(user.status) || user.data) {
+            return {
+              balance: "",
+              currencyCode: "",
+              languageCode: "",
+              message: "User Not found",
+              statusId: 1001,
+              playerId: "",
+              userName: "",
+            };
+          }
+          await betWin(payload, user)
+          var updateUser: any = await getUser(payload)
           return {
-            balance: "",
+            balance: updateUser.data.balance,
             token: "",
             transactionId: Math.floor(Math.random() * 1000000000),
             platformTransactionId: Math.floor(Math.random() * 1000000000),
@@ -128,6 +171,31 @@ async function addUser(payload: { currencyCode?: any; languageCode?: any; player
       });
     };
     const data = await myPromise();
+    return { status: constants["DB_SUCCESS"], data: data };
+  } catch (error) {
+    return { status: constants["DB_ERROR"], message: error };
+  }
+}
+async function betWin(payload: { playerId?: any; amount?: any }, user: any) {
+  const { playerId, amount } = payload
+  try {
+    const myPromise = () => {
+      return new Promise((resolve, reject) => {
+        mongo
+          .getDB()
+          .collection("users")
+          .updateOne(
+            {
+              playerId: playerId,
+            },
+            {
+              $set: { balance: user.data.balance - payload.amount },
+            }, function (error: any, data: unknown) {
+              error ? reject(error) : resolve(data);
+            });
+      });
+    };
+    var data = await myPromise();
     return { status: constants["DB_SUCCESS"], data: data };
   } catch (error) {
     return { status: constants["DB_ERROR"], message: error };

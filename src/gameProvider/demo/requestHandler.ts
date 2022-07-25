@@ -39,6 +39,8 @@ const self = {
   },
 
   bet: async (betInfo: any, additionalParams: any) => {
+    console.log("AAAAAAAAAYA");
+    
     const transactionRequest = new TransactionRequest(betInfo);
 
     log.debug({
