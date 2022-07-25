@@ -4,7 +4,7 @@ const constants = require("./constants.json");
 
 function handleRequest({
   path = "",
-  baseUrl = "https://dev.platform-pps.sportsit-tech.net/rgs",
+  baseUrl = "*******************",
   payload,
   merchantId,
 }) {
