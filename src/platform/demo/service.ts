@@ -1,5 +1,5 @@
 import AuthenticatePlayerResponse from "../../model/response/authenticatePlayerResponse";
-const TransactionResponse = require("../../rgs/response/transactionResponse");
+const TransactionResponse = require("../../model/response/transactionResponse");
 const uuid = require("node-uuid");
 
 let requestHandler = require("./requestHandlerTest");

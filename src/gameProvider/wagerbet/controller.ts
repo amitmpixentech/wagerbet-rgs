@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import _gameConstants from "./constants.json";
 import isInvalidStatus from "../../utills/isInvalidStatus";
-const handler = require("./requestHandler");
+import handler from "./requestHandler"
 
 const router = express.Router();
 const constants = require("../../config/constants");

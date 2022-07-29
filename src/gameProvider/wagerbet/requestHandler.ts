@@ -15,7 +15,7 @@ class RequestHandler {
       }
     );
 
-    log.debug({
+    log.info({
       text: authenticatePlayerRequest,
       fn: "authenticatePlayer",
     });
@@ -72,7 +72,7 @@ class RequestHandler {
     return { ...response };
   }
 
-  public async win(winInfo: any) {
+  public async win(winInfo: any, additionalParams: any) {
     const transactionRequest = new TransactionRequest(winInfo);
     log.debug({
       text: transactionRequest,

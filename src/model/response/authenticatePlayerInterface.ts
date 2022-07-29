@@ -7,3 +7,5 @@ interface AuthenticatePlayer {
     balance?: any;
     otherParams?: any;
 }
+
+export default AuthenticatePlayer

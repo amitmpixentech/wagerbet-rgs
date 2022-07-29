@@ -1,3 +1,4 @@
+import AuthenticatePlayer from "./authenticatePlayerInterface"
 class AuthenticatePlayerResponse implements AuthenticatePlayer {
   status = ""; message = ""; playerId = ""; playerName = ""; currencyCode = ""; balance = ""; otherParams = "";
 

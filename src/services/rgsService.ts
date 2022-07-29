@@ -34,6 +34,8 @@ class RGSService {
         const _platformId = platformId as keyof typeof platformServiceMappingConfig
 
         const platformService = require(platformServiceMappingConfig[_platformId]);
+        console.log("platformService", platformService);
+
         const authenticatePlayerResponse = await platformService.authenticatePlayer(
             {
                 authenticatePlayerRequest,
