@@ -1,5 +1,7 @@
-const winston = require("winston");
-const path = require("path");
+import config from "../config";
+
+import winston from "winston";
+import path from "path";
 const { combine, timestamp, label, printf } = winston.format;
 
 const getLabel = function (module: any) {
@@ -7,25 +9,20 @@ const getLabel = function (module: any) {
   return parts[parts.length - 2] + path.sep + parts.pop();
 };
 
-const customFormat = printf(
-  (data: {
-    message: { [x: string]: any };
-    level: any;
-    timestamp: any;
-    label: any;
-  }) => {
-    if (data.message && typeof data.message === "object") {
-      return `${data.level}: ${data.timestamp} [${data.label} - ${
-        data.message["fn"]
-      }()] ${JSON.stringify(data.message["text"])}`;
-    } else {
-      return `${data.level}: ${data.timestamp} [${data.label}] ${data.message}`;
-    }
+const customFormat = printf((data: winston.Logform.TransformableInfo) => {
+  if (data.message && typeof data.message === "object") {
+    return `${data.level}: ${data.timestamp} [${data.label} - ${
+      data.message["fn"]
+    }()] ${JSON.stringify(data.message["text"])}`;
+  } else {
+    return `${data.level}: ${data.timestamp} [${data.label}] ${data.message}`;
   }
-);
+});
 
 const getLogger = function (module: any) {
-  return new winston.createLogger({
+  return winston.createLogger({
+    level: config.logs.level,
+    levels: winston.config.npm.levels,
     format: combine(
       label({ label: getLabel(module) }),
       timestamp(),
