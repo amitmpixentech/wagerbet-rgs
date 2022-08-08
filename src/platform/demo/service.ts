@@ -1,5 +1,5 @@
 import AuthenticatePlayerResponse from "../../model/response/authenticatePlayerResponse";
-const TransactionResponse = require("../../model/response/transactionResponse");
+import TransactionResponse from "../../model/response/transactionResponse";
 const uuid = require("node-uuid");
 
 let requestHandler = require("./requestHandlerTest");
@@ -13,7 +13,7 @@ class Service {
 
   }
 
-  public async authenticatePlayer(authenticatePlayerRequest: any, additionalParams: any) {
+  public async authenticatePlayer({ authenticatePlayerRequest, additionalParams }: any) {
     log.info({
       text: authenticatePlayerRequest,
       fn: "authenticatePlayer",
@@ -103,13 +103,11 @@ class Service {
     }
 
     const transactionResponse = new TransactionResponse({
-      status: 1000,
+      status: "1000",
       message: response.message,
       playerName: response.playerName,
       balance: response.balance,
       currencyCode: response.currencyCode,
-      rgsTransactionId: response.rgsTransactionId,
-      platformTransactionId: response.platformTransactionId,
       otherParams: response,
     });
 
@@ -140,13 +138,11 @@ class Service {
     });
 
     const transactionResponse = new TransactionResponse({
-      status: 1000,
-      message: response.message,
-      playerName: response.userName,
-      balance: response.balance,
-      currencyCode: response.currencyCode,
-      rgsTransactionId: response.rgsTransactionId,
-      platformTransactionId: response.platformTransactionId,
+      status: "1000",
+      message: response?.message,
+      playerName: response?.userName,
+      balance: response?.balance,
+      currencyCode: response?.currencyCode,
       otherParams: response,
     });
 
@@ -159,4 +155,4 @@ class Service {
   }
 };
 
-export default new Service();
+export default Service;
