@@ -1,8 +1,8 @@
 import { MongoClient } from "mongodb";
 import DatabaseInterface from "./databaseInterface";
 import logger from '../logger/logger';
+import config from "../config";
 
-const config = require("../config/config.json");
 const log = logger(module)
 
 class Mongo implements DatabaseInterface {
@@ -16,7 +16,7 @@ class Mongo implements DatabaseInterface {
   }
 
   public async init() {
-    this.client = await MongoClient.connect(config.mongoDBURL, {
+    this.client = await MongoClient.connect(config.databaseURL, {
       // @ts-ignore
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -29,7 +29,7 @@ class Mongo implements DatabaseInterface {
       return;
     }
 
-    this.db = this.client.db(config.mongoDB);
+    this.db = this.client.db(config.dataBase);
   }
 
   public getDB() { return this.db }

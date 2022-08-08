@@ -1,5 +1,0 @@
-{
-  "mongoDBURL": "mongodb://localhost:27017",
-  "mongoDB": "rgs",
-  "isDev": false
-}
