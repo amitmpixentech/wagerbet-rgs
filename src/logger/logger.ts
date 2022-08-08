@@ -1,7 +1,7 @@
-import config from "../config";
+import config from '../config';
 
-import winston from "winston";
-import path from "path";
+import winston from 'winston';
+import path from 'path';
 const { combine, timestamp, label, printf } = winston.format;
 
 const getLabel = function (module: any) {
@@ -10,10 +10,10 @@ const getLabel = function (module: any) {
 };
 
 const customFormat = printf((data: winston.Logform.TransformableInfo) => {
-  if (data.message && typeof data.message === "object") {
-    return `${data.level}: ${data.timestamp} [${data.label} - ${
-      data.message["fn"]
-    }()] ${JSON.stringify(data.message["text"])}`;
+  if (data.message && typeof data.message === 'object') {
+    return `${data.level}: ${data.timestamp} [${data.label} - ${data.message['fn']}()] ${JSON.stringify(
+      data.message['text'],
+    )}`;
   } else {
     return `${data.level}: ${data.timestamp} [${data.label}] ${data.message}`;
   }
@@ -23,19 +23,12 @@ const getLogger = function (module: any) {
   return winston.createLogger({
     level: config.logs.level,
     levels: winston.config.npm.levels,
-    format: combine(
-      label({ label: getLabel(module) }),
-      timestamp(),
-      customFormat
-    ),
+    format: combine(label({ label: getLabel(module) }), timestamp(), customFormat),
     transports: [
       new winston.transports.Console({
-        format: winston.format.combine(
-          winston.format.cli(),
-          winston.format.splat()
-        ),
+        format: winston.format.combine(winston.format.cli(), winston.format.splat()),
       }),
-      new winston.transports.File({ filename: "combined.log" }),
+      new winston.transports.File({ filename: 'combined.log' }),
     ],
   });
 };
