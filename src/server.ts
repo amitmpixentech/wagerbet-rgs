@@ -3,6 +3,7 @@ import compression from "compression";
 import cors from "cors";
 import _ from "underscore";
 import mongo from "./_helper/mongo"
+import appDataSourceLoader from './orm/dbCreateConnection';
 import gameProviderControllerMappingConfig from "./config/gameProviderControllerMapping.json";
 
 import logger from './logger/logger';
@@ -34,7 +35,7 @@ class Server {
         }
     }
 
-    private configureDB() { mongo.init() }
+    private configureDB() { mongo.init();  appDataSourceLoader();}
 
     public start() {
         this.app.listen(this.app.get("port"), () => {

@@ -23,4 +23,12 @@ export default {
   logs: {
     level: process.env.LOG_LEVEL || 'silly',
   },
+
+  database: {
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    db: process.env.DB,
+  },
 };

@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node dist/rgs-service.js",
     "dev": "nodemon",
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "migration:run": "NODE_PATH=./src ts-node ./node_modules/typeorm/cli.js migration:run -d ./src/orm/ormconfig.ts",
+    "migration:revert": "NODE_PATH=./src ts-node ./node_modules/typeorm/cli.js migration:revert -d ./src/orm/ormconfig.ts",
+    "migration:generate": "NODE_PATH=./src ts-node ./node_modules/.bin/typeorm --pretty -d ./src/orm/ormconfig.ts migration:generate "
   },
   "repository": {
     "type": "git",
@@ -27,11 +30,12 @@
     "dotenv": "^16.0.1",
     "express": "^4.17.2",
     "express-xml-bodyparser": "^0.3.0",
-    "mongodb": "^4.6.0",
     "mongoose": "^6.3.5",
     "node-fetch": "^3.2.4",
     "node-uuid": "^1.4.8",
     "path": "^0.12.7",
+    "pg": "^8.7.3",
+    "typeorm": "^0.3.7",
     "underscore": "^1.13.3",
     "winston": "^3.7.2"
   },

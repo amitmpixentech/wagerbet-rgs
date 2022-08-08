@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es6",
     "lib": ["es2017", "es2020", "esnext.asynciterable"],
     "typeRoots": ["./node_modules/@types"],
     "allowSyntheticDefaultImports": true,
@@ -15,7 +15,8 @@
     "allowJs": true,
     "noEmit": false,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "strictPropertyInitialization": false
   },
   "include": ["./src/**/*"],
   "exclude": ["node_modules"]
