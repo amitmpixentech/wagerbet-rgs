@@ -1,6 +1,5 @@
 import mongo from "../_helper/mongo";
 import platformServiceMappingConfig from "../config/platformServiceMapping.json";
-import PlayerSession from "../model/database/playerSession";
 import TransactionResponse from "../model/response/transactionResponse";
 const rgsDatabaseService = require("./databaseService");
 const uuid = require("node-uuid");
@@ -8,6 +7,7 @@ const constants = require("./../config/constants");
 import isInvalidStatus from "../utills/isInvalidStatus";
 import logger from "../logger/logger";
 import dbHelper from "./helper/databaseHelper";
+import PlayerSession from "../model/database/playerSession";
 const log = logger(module);
 
 class RGSService {
@@ -55,7 +55,7 @@ class RGSService {
             };
         }
 
-        const playerSession = await new PlayerSession({
+        const playerSession =  new PlayerSession({
             playerId: authenticatePlayerResponse["playerId"],
             token: authenticatePlayerRequest["token"],
             brand: authenticatePlayerRequest["brand"],

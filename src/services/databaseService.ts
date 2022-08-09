@@ -1,25 +1,29 @@
+import { PlayerSession } from "../orm/entities/PlayerSession";
+import { dataSource } from "../orm/ormconfig";
 import mongo from "../_helper/mongo";
 const constants = require("../config/constants");
-import PlayerGameRound from "../model/database/playerGameRound";
+const PlayerGameRound = require("../model/database/playerGameRound");
 import Transaction from "../model/database/transaction";
 
 const self = {
     db: mongo.getDB(),
-    savePlayerSession: async (savePlayerSession: { playerSession: any; }) => {
+    savePlayerSession: async (savePlayerSession: { playerSession: PlayerSession; }) => {
         const { playerSession } = savePlayerSession
         try {
-            playerSession.insertDate = new Date();
-            const myPromise = () => {
-                return new Promise((resolve, reject) => {
-                    mongo
-                        .getDB()
-                        .collection("playerSessions")
-                        .insertOne(playerSession, function (error: any, data: unknown) {
-                            error ? reject(error) : resolve(data);
-                        });
-                });
-            };
-            const data = await myPromise();
+            // playerSession.insertDate = new Date();
+            // const myPromise = () => {
+            //     return new Promise((resolve, reject) => {
+            //         mongo
+            //             .getDB()
+            //             .collection("playerSessions")
+            //             .insertOne(playerSession, function (error: any, data: unknown) {
+            //                 error ? reject(error) : resolve(data);
+            //             });
+            //     });
+            // };
+
+            const PlayerSessionModel = dataSource.getRepository(PlayerSession);
+            const data = await PlayerSessionModel.insert(playerSession);
             return { status: constants["DB_SUCCESS"], data: data };
         } catch (error) {
             return { status: constants["DB_ERROR"], message: error };
@@ -29,17 +33,18 @@ const self = {
     getPlayerSession: async (getPlayerSession: { token: any; brand: any; }) => {
         const { token, brand } = getPlayerSession
         try {
-            const myPromise = () => {
-                return new Promise((resolve, reject) => {
-                    mongo
-                        .getDB()
-                        .collection("playerSessions")
-                        .findOne({ token: token, brand: brand }, function (error: any, data: unknown) {
-                            error ? reject(error) : resolve(data);
-                        });
-                });
-            };
-            const data = await myPromise();
+            // const myPromise = () => {
+            //     return new Promise((resolve, reject) => {
+            //         mongo
+            //             .getDB()
+            //             .collection("playerSessions")
+            //             .findOne({ token: token, brand: brand }, function (error: any, data: unknown) {
+            //                 error ? reject(error) : resolve(data);
+            //             });
+            //     });
+            // };
+            const PlayerSessionModel = dataSource.getRepository(PlayerSession);
+            const data = await PlayerSessionModel.findOneBy({ token, brand });
             return { status: constants["DB_SUCCESS"], data: data };
         } catch (error) {
             return { status: constants["DB_ERROR"], message: error };
@@ -217,8 +222,12 @@ const self = {
             })
             const transaction = new Transaction({
                 rgsTransactionId: rgsTransactionId,
+                platformTransactionId: "",
                 amount: amount,
                 transactionType: transactionType,
+                requestTime: new Date() as any,
+                responseTime: "",
+                message: "",
             });
             
             let incrQuery: any = {};
@@ -258,6 +267,7 @@ const self = {
             const data = await myPromise();
             return { status: constants["DB_SUCCESS"], data: data };
         } catch (error) {
+            console.log('error: ', error);
             return { status: constants["DB_ERROR"], message: error };
         }
     },
