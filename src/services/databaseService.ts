@@ -2,7 +2,7 @@ import { PlayerSession } from "../orm/entities/PlayerSession";
 import { dataSource } from "../orm/ormconfig";
 import mongo from "../_helper/mongo";
 const constants = require("../config/constants");
-const PlayerGameRound = require("../model/database/playerGameRound");
+const PlayerGameRound = require("../model/database/playerGameRound").default;
 import Transaction from "../model/database/transaction";
 
 const self = {
