@@ -3,7 +3,7 @@ import mongo from '../../_helper/mongo';
 import { dataSource } from '../../orm/ormconfig';
 import { User } from '../../orm/entities/User';
 
-const constants = require('../../config/constants');
+import { constants } from '../../config/constants';
 
 function handleRequest(handleRequest: { path: string; payload: any }) {
   const { path, payload } = handleRequest;

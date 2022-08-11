@@ -3,7 +3,7 @@ import TransactionResponse from "../../model/response/transactionResponse";
 const uuid = require("node-uuid");
 
 let requestHandler = require("./requestHandlerTest");
-const constants = require("../../config/constants");
+import { constants } from '../../config/constants';
 import logger from "../../logger/logger";
 const log = logger(module);;
 

@@ -3,7 +3,9 @@ import platformServiceMappingConfig from "../config/platformServiceMapping.json"
 import TransactionResponse from "../model/response/transactionResponse";
 const rgsDatabaseService = require("./databaseService");
 const uuid = require("node-uuid");
-const constants = require("./../config/constants");
+
+import { constants } from '../config/constants';
+
 import isInvalidStatus from "../utills/isInvalidStatus";
 import logger from "../logger/logger";
 import dbHelper from "./helper/databaseHelper";

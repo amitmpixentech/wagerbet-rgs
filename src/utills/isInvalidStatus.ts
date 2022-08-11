@@ -1,18 +1,18 @@
-const _constants = require("../config/constants");
+import { constants } from '../config/constants';
 
 function isInvalidStatus(status: any) {
   return (
-    status == _constants["INSUFFICIENT_FUNDS"] ||
-    status == _constants["INVALID_TOKEN"] ||
-    status == _constants["INTERNAL_SERVER_ERROR"] ||
-    status == _constants["USER_LOSS_LIMIT_EXCEEDED"] ||
-    status == _constants["INVALID_REQUEST"] ||
-    status == _constants["INVALID_USER"] ||
-    status == _constants["INVALID_SIGNATURE"] ||
-    status == _constants["USER_TIME_OUT_SET"] ||
-    status == _constants["INVALID_STAKE"] ||
-    status == _constants["DB_ERROR"] ||
-    status == _constants["USER_SESSION_NOT_EXIST_CODE"]
+    status == constants['INSUFFICIENT_FUNDS'] ||
+    status == constants['INVALID_TOKEN'] ||
+    status == constants['INTERNAL_SERVER_ERROR'] ||
+    status == constants['USER_LOSS_LIMIT_EXCEEDED'] ||
+    status == constants['INVALID_REQUEST'] ||
+    status == constants['INVALID_USER'] ||
+    status == constants['INVALID_SIGNATURE'] ||
+    status == constants['USER_TIME_OUT_SET'] ||
+    status == constants['INVALID_STAKE'] ||
+    status == constants['DB_ERROR'] ||
+    status == constants['USER_SESSION_NOT_EXIST_CODE']
   );
 }
 export default isInvalidStatus;

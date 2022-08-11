@@ -1,4 +1,4 @@
-const constants = require("./../../config/constants");
+import { constants } from '../../config/constants';
 import isInvalidStatus from "../../utills/isInvalidStatus";
 const rgsDatabaseService = require("../databaseService");
 
@@ -23,7 +23,7 @@ class DatabaseHelper {
             providerId: transactionRequest["providerId"],
             currencyCode: transactionRequest["currencyCode"],
             region: transactionRequest["region"],
-            status: "",
+            status: null,
         };
 
         if (transactionRequest["transactionType"] == constants["bet"]) {
@@ -52,7 +52,7 @@ class DatabaseHelper {
             playerId: playerSession["data"]["playerId"],
             platformTransactionId: transactionResponse["platformTransactionId"],
             message: transactionResponse["message"],
-            status: "",
+            status: null,
         };
 
         switch (transactionRequest["transactionType"]) {

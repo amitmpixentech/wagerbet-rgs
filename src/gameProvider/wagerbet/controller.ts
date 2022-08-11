@@ -1,23 +1,22 @@
 import express, { Request, Response, NextFunction } from 'express';
-import _gameConstants from "./constants.json";
-import isInvalidStatus from "../../utills/isInvalidStatus";
-import handler from "./requestHandler"
+import _gameConstants from './constants.json';
+import isInvalidStatus from '../../utills/isInvalidStatus';
+import handler from './requestHandler';
 
 const router = express.Router();
-const constants = require("../../config/constants");
+import { constants } from '../../config/constants';
 
-router.post("/v2/init", authenticatePlayer);
-router.post("/v2/bet", checkAmount, bet);
-router.post("/v2/win", checkAmount, win);
-router.post("/v2/balance", balance);
-
+router.post('/v2/init', authenticatePlayer);
+router.post('/v2/bet', checkAmount, bet);
+router.post('/v2/win', checkAmount, win);
+router.post('/v2/balance', balance);
 
 module.exports = router;
 
 function authenticatePlayer(req: Request, res: Response, next: NextFunction) {
   if (!req?.body?.token) {
     const response = {
-      message: _gameConstants["INVALID_TOKEN"],
+      message: _gameConstants['INVALID_TOKEN'],
     };
     res.status(400).send(response);
     return;
@@ -34,7 +33,7 @@ function authenticatePlayer(req: Request, res: Response, next: NextFunction) {
     !req?.body?.extraData?.playerId
   ) {
     const response = {
-      message: _gameConstants["INVALID_PKT"],
+      message: _gameConstants['INVALID_PKT'],
     };
     res.status(400).send(response);
     return;
@@ -48,18 +47,18 @@ function authenticatePlayer(req: Request, res: Response, next: NextFunction) {
         platformId: req?.body?.extraData?.platformId,
         operatorId: req?.body?.extraData?.operatorId,
         region: req?.body?.extraData?.region,
-        aggregatorId: "",
-        providerId: "",
+        aggregatorId: '',
+        providerId: '',
       },
       {
         currencyCode: req?.body?.extraData?.currencyCode,
         language: req?.body?.extraData?.language,
         gameCode: req?.body?.extraData?.gameCode,
         playerId: req?.body?.extraData?.playerId,
-      }
+      },
     )
-    .then((response: { status: any; message: any; }) => {
-      res.header("Content-Type", "application/json");
+    .then((response: { status: any; message: any }) => {
+      res.header('Content-Type', 'application/json');
       if (isInvalidStatus(response?.status)) {
         res.status(400).send({ message: response.message });
       } else {
@@ -72,7 +71,7 @@ function authenticatePlayer(req: Request, res: Response, next: NextFunction) {
 function checkAmount(req: Request, res: Response, next: NextFunction) {
   if (isNaN(+req?.body?.amount)) {
     const response = {
-      message: _gameConstants["INVALID_AMOUNT"],
+      message: _gameConstants['INVALID_AMOUNT'],
     };
     res.status(400).send(response);
     return;
@@ -94,7 +93,7 @@ function bet(req: Request, res: Response, next: NextFunction) {
     !req?.body?.extraData?.operatorId
   ) {
     const response = {
-      message: _gameConstants["INVALID_PKT"],
+      message: _gameConstants['INVALID_PKT'],
     };
     res.status(400).send(response);
     return;
@@ -112,17 +111,17 @@ function bet(req: Request, res: Response, next: NextFunction) {
         roundId: req?.body?.roundId,
         platformId: req?.body?.extraData?.platformId,
         operatorId: req?.body?.extraData?.operatorId,
-        aggregatorId: "",
-        providerId: "",
+        aggregatorId: '',
+        providerId: '',
         transactionType: constants?.bet,
-        referenceTransactionId: "",
+        referenceTransactionId: '',
       },
       {
         language: req?.body?.extraData?.language,
-      }
+      },
     )
     .then((response: any) => {
-      res.header("Content-Type", "application/json");
+      res.header('Content-Type', 'application/json');
       if (isInvalidStatus(response?.status)) {
         res.status(400).send({ message: response.message });
       } else {
@@ -146,7 +145,7 @@ function win(req: Request, res: Response, next: NextFunction) {
     !req?.body?.extraData?.operatorId
   ) {
     const response = {
-      message: _gameConstants["INVALID_PKT"],
+      message: _gameConstants['INVALID_PKT'],
     };
     res.status(400).send(response);
     return;
@@ -164,17 +163,17 @@ function win(req: Request, res: Response, next: NextFunction) {
         roundId: req?.body?.roundId,
         platformId: req?.body?.extraData?.platformId,
         operatorId: req?.body?.extraData?.operatorId,
-        aggregatorId: "",
-        providerId: "",
+        aggregatorId: '',
+        providerId: '',
         transactionType: constants?.win,
-        referenceTransactionId: "",
+        referenceTransactionId: '',
       },
       {
         language: req?.body?.extraData?.language,
-      }
+      },
     )
     .then((response: any) => {
-      res.header("Content-Type", "application/json");
+      res.header('Content-Type', 'application/json');
       if (isInvalidStatus(response?.status)) {
         res.status(400).send({ message: response.message });
       } else {
@@ -194,7 +193,7 @@ function balance(req: Request, res: Response, next: NextFunction) {
     !req?.body?.extraData?.operatorId ||
     !req?.body?.extraData?.gameCode
   ) {
-    const response = { message: _gameConstants["INVALID_PKT"] };
+    const response = { message: _gameConstants['INVALID_PKT'] };
     res.status(400).send(response);
     return;
   }
@@ -203,20 +202,20 @@ function balance(req: Request, res: Response, next: NextFunction) {
       playerId: req?.body?.extraData?.playerId,
       token: req?.body?.token,
       brand: req?.body?.extraData?.brand,
-      transactionId: "",
-      amount: "",
+      transactionId: '',
+      amount: '',
       gameCode: req?.body?.extraData?.gameCode,
       currencyCode: req?.body?.extraData?.currencyCode,
-      roundId: "",
+      roundId: '',
       platformId: req?.body?.extraData?.platformId,
       operatorId: req?.body?.extraData?.operatorId,
-      aggregatorId: "",
-      providerId: "",
+      aggregatorId: '',
+      providerId: '',
       transactionType: constants?.balance,
-      referenceTransactionId: "",
+      referenceTransactionId: '',
     })
     .then((response: any) => {
-      res.header("Content-Type", "application/json");
+      res.header('Content-Type', 'application/json');
       if (isInvalidStatus(response?.status)) {
         res.status(400).send({ message: response.message });
       } else {
