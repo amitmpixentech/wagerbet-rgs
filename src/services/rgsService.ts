@@ -141,10 +141,7 @@ class RGSService {
         const platformService = require(platformServiceMappingConfig[_platformId]).default;
 
         log.info(`Calling provider ${platformId}`);
-        console.log('====================================');
-        console.log(platformService);
-        console.log('====================================');
-
+        
         const transactionResponse = await platformService.transact(
             _transactionRequest,
             additionalParams

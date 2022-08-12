@@ -1,7 +1,6 @@
 import mongo from "../_helper/mongo";
 const constants = require("../config/constants");
 import PlayerGameRound from "../model/database/playerGameRound";
-import { log } from "console";
 import Transaction from "../model/database/transaction";
 
 const self = {
@@ -126,7 +125,6 @@ const self = {
                 playerId,
             });
             if (!gameRound["data"]) {
-                console.log("playerGameRound");
                 const playerGameRound = new PlayerGameRound({
                     brand: brand,
                     gameCode: gameCode,
