@@ -103,7 +103,7 @@ class Service {
       playerName: response.playerName,
       balance: response.balance,
       currencyCode: response.currencyCode,
-      otherParams: response,
+      otherParams: await response,
     });
 
     log.info({

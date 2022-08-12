@@ -1,7 +1,7 @@
 import mongo from "../_helper/mongo";
 import platformServiceMappingConfig from "../config/platformServiceMapping.json";
 import TransactionResponse from "../model/response/transactionResponse";
-const rgsDatabaseService = require("./databaseService");
+import rgsDatabaseService from "./databaseService";
 const uuid = require("node-uuid");
 
 import { constants } from '../config/constants';
@@ -9,7 +9,9 @@ import { constants } from '../config/constants';
 import isInvalidStatus from "../utills/isInvalidStatus";
 import logger from "../logger/logger";
 import dbHelper from "./helper/databaseHelper";
-import PlayerSession from "../model/database/playerSession";
+import { PlayerSession } from "../orm/entities/PlayerSession";
+import { dataSource } from "../orm/ormconfig";
+import { ProviderGameRoundMap } from "../orm/entities/ProviderGameRoundMap";
 const log = logger(module);
 
 class RGSService {
@@ -57,7 +59,8 @@ class RGSService {
             };
         }
 
-        const playerSession =  new PlayerSession({
+        const PlayerSessionModel = dataSource.getRepository(PlayerSession);
+        const playerSession =  PlayerSessionModel.create({
             playerId: authenticatePlayerResponse["playerId"],
             token: authenticatePlayerRequest["token"],
             brand: authenticatePlayerRequest["brand"],
@@ -155,9 +158,10 @@ class RGSService {
             rgsTransactionId: rgsTransactionId,
             playerSession: playerSession,
             transactionResponse: transactionResponse,
+            gameRoundDbID: transactionRecord.data.id
         });
 
-        if (isInvalidStatus(_updateTransaction.rgsService)) {
+        if (isInvalidStatus(_updateTransaction.status)) {
             log.info("Invalid Transaction Response");
             log.info({
                 text: _updateTransaction,
@@ -167,11 +171,12 @@ class RGSService {
         }
 
         if (_transactionRequest["transactionType"] == constants["bet"]) {
+            const ProviderGameRoundMapModel = dataSource.getRepository(ProviderGameRoundMap);
             const _recordProviderGameRoundMap =
-                await rgsDatabaseService.recordProviderGameRoundMap({
+                await rgsDatabaseService.recordProviderGameRoundMap(ProviderGameRoundMapModel.create({
                     gameRoundId: _transactionRequest["roundId"],
                     rgsRoundID: uuid.v4(),
-                });
+                }));
 
             if (isInvalidStatus(_recordProviderGameRoundMap.status)) {
                 // return _recordProviderGameRoundMap;

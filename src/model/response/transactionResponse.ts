@@ -6,14 +6,7 @@ class TransactionResponse {
   currencyCode: any;
   otherParams: any;
 
-  constructor({
-    status = "",
-    message = "",
-    playerName = "",
-    balance = "",
-    currencyCode = "",
-    otherParams = "",
-  }) {
+  constructor({ status = '', message = '', playerName = '', balance = '', currencyCode = '', otherParams = '' }: any) {
     this.status = status;
     this.message = message;
     this.playerName = playerName;
@@ -21,6 +14,6 @@ class TransactionResponse {
     this.currencyCode = currencyCode;
     this.otherParams = otherParams;
   }
-};
+}
 
-export default TransactionResponse
+export default TransactionResponse;

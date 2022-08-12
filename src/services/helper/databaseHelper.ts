@@ -1,6 +1,6 @@
 import { constants } from '../../config/constants';
 import isInvalidStatus from "../../utills/isInvalidStatus";
-const rgsDatabaseService = require("../databaseService");
+import rgsDatabaseService from "../databaseService";
 
 class DatabaseHelper {
     public async recordTransaction(recordRequest: any) {
@@ -43,6 +43,7 @@ class DatabaseHelper {
             rgsTransactionId,
             playerSession,
             transactionResponse,
+            gameRoundDbID
         } = updateRequest
         let updateTransactionData = {
             roundId: transactionRequest["roundId"],
@@ -52,6 +53,7 @@ class DatabaseHelper {
             playerId: playerSession["data"]["playerId"],
             platformTransactionId: transactionResponse["platformTransactionId"],
             message: transactionResponse["message"],
+            gameRoundDbID,
             status: null,
         };
 

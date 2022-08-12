@@ -1,3 +1,5 @@
+import { ITransaction } from '../../orm/entities/GameRound';
+
 class Transaction {
   rgsTransactionId: any;
   platformTransactionId: any;
@@ -8,14 +10,14 @@ class Transaction {
   message: any;
 
   constructor({
-    rgsTransactionId = "",
-    platformTransactionId = "",
-    amount = "",
-    transactionType = "",
-    requestTime = "",
-    responseTime = "",
-    message = "",
-  }) {
+    rgsTransactionId = '',
+    platformTransactionId = '',
+    amount = null,
+    transactionType = '',
+    requestTime = null,
+    responseTime = null,
+    message = '',
+  }: ITransaction) {
     this.rgsTransactionId = rgsTransactionId;
     this.platformTransactionId = platformTransactionId;
     this.amount = amount;
@@ -25,7 +27,7 @@ class Transaction {
     this.message = message;
   }
 
-  getTransaction() {
+  getTransaction(): ITransaction {
     return {
       rgsTransactionId: this.rgsTransactionId,
       platformTransactionId: this.platformTransactionId,
@@ -36,6 +38,6 @@ class Transaction {
       message: this.message,
     };
   }
-};
+}
 
-export default Transaction
+export default Transaction;

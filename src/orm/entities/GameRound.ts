@@ -33,7 +33,7 @@ export class GameRound {
   @Column()
   startDate: Date;
 
-  @Column()
+  @Column({ nullable: true })
   endDate: Date;
 
   @Column()
@@ -47,6 +47,9 @@ export class GameRound {
 
   @Column({ type: 'decimal' })
   jpWinAmount: number;
+
+  @Column({ type: 'decimal' })
+  refundAmount: number;
 
   @Column()
   currencyCode: string;
