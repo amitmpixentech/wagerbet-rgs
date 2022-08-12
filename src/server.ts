@@ -2,7 +2,6 @@ import express, { Application } from 'express';
 import compression from 'compression';
 import cors from 'cors';
 import _ from 'underscore';
-import mongo from './_helper/mongo';
 import appDataSourceLoader from './orm/dbCreateConnection';
 import gameProviderControllerMappingConfig from './config/gameProviderControllerMapping.json';
 
@@ -37,7 +36,6 @@ class Server {
   }
 
   private configureDB() {
-    mongo.init();
     appDataSourceLoader();
   }
 

@@ -1,4 +1,3 @@
-import mongo from "../_helper/mongo";
 import platformServiceMappingConfig from "../config/platformServiceMapping.json";
 import TransactionResponse from "../model/response/transactionResponse";
 import rgsDatabaseService from "./databaseService";
@@ -15,10 +14,8 @@ import { ProviderGameRoundMap } from "../orm/entities/ProviderGameRoundMap";
 const log = logger(module);
 
 class RGSService {
-    db: any;
 
     constructor() {
-        mongo.getDB();
     }
 
     public async authenticatePlayer(authRequestData: { authenticatePlayerRequest: any; additionalParams: any; }) {

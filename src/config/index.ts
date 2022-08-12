@@ -12,9 +12,6 @@ if (!envFound) {
 export default {
   port: parseInt(process.env.PORT || '8080', 10),
 
-  databaseURL: process.env.MONGODB_URI as string,
-  dataBase: process.env.MONGODB as string,
-
   isDev: !!process.env.IS_DEV,
 
   /**
