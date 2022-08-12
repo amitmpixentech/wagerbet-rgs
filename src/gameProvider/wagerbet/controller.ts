@@ -81,9 +81,6 @@ function checkAmount(req: Request, res: Response, next: NextFunction) {
 }
 
 function bet(req: Request, res: Response, next: NextFunction) {
-  console.log('====================================');
-  console.log("+++++++++++++++");
-  console.log('====================================');
   if (
     !req?.body?.token ||
     !req?.body?.amount ||

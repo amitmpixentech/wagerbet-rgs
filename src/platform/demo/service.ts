@@ -8,11 +8,6 @@ import logger from "../../logger/logger";
 const log = logger(module);;
 
 class Service {
-
-  constructor() {
-
-  }
-
   public async authenticatePlayer({ authenticatePlayerRequest, additionalParams }: any) {
     log.info({
       text: authenticatePlayerRequest,
@@ -155,4 +150,4 @@ class Service {
   }
 };
 
-export default Service;
+export default new Service();

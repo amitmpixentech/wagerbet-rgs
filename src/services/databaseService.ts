@@ -1,7 +1,8 @@
 import mongo from "../_helper/mongo";
 const constants = require("../config/constants");
-const PlayerGameRound = require("../model/database/playerGameRound");
-const Transaction = require("../model/database/transaction");
+import PlayerGameRound from "../model/database/playerGameRound";
+import { log } from "console";
+import Transaction from "../model/database/transaction";
 
 const self = {
     db: mongo.getDB(),
@@ -125,6 +126,7 @@ const self = {
                 playerId,
             });
             if (!gameRound["data"]) {
+                console.log("playerGameRound");
                 const playerGameRound = new PlayerGameRound({
                     brand: brand,
                     gameCode: gameCode,
@@ -134,15 +136,21 @@ const self = {
                     aggregatorId: aggregatorId,
                     providerId: providerId,
                     roundId: roundId,
+                    //@ts-ignore
                     startDate: new Date(),
                     endDate: undefined,
                     status: status,
+                    //@ts-ignore
                     betAmount: 0,
+                    //@ts-ignore
                     winAmount: 0,
+                    //@ts-ignore
                     jpWinAmount: 0,
                     currencyCode: currencyCode,
+                    //@ts-ignore
                     transactions: [],
                     region: region,
+                    //@ts-ignore
                     otherParams: {},
                 });
                 const myPromise = () => {
@@ -208,18 +216,13 @@ const self = {
                 currencyCode,
                 region,
                 status,
-            });
-
+            })
             const transaction = new Transaction({
                 rgsTransactionId: rgsTransactionId,
-                platformTransactionId: null,
                 amount: amount,
                 transactionType: transactionType,
-                requestTime: new Date(),
-                responseTime: null,
-                message: null,
             });
-
+            
             let incrQuery: any = {};
             if (transactionType === constants["bet"]) {
                 incrQuery["betAmount"] = +amount;

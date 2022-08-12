@@ -34,8 +34,6 @@ class RGSService {
         const _platformId = platformId as keyof typeof platformServiceMappingConfig
 
         const Service = require(platformServiceMappingConfig[_platformId]).default;
-        console.log("platformService", new Service());
-
         const authenticatePlayerResponse = await Service.authenticatePlayer(
             {
                 authenticatePlayerRequest,
@@ -98,6 +96,7 @@ class RGSService {
 
         const playerSession = await this.getPlayerSession(transactionRequest);
 
+
         if (isInvalidStatus(playerSession.status) || !playerSession.data) {
             log.info("Player Session Not found");
             log.info({
@@ -123,7 +122,7 @@ class RGSService {
             transactionRequest: _transactionRequest,
             playerSession: playerSession,
             rgsTransactionId: rgsTransactionId,
-        });
+        })
 
         if (isInvalidStatus(transactionRecord.status)) {
             log.info("Error creating Transaction Record");
@@ -139,9 +138,12 @@ class RGSService {
 
         const platformId = constants[_transactionRequest["platformId"]];
         const _platformId = platformId as keyof typeof platformServiceMappingConfig
-        const platformService = require(platformServiceMappingConfig[_platformId]);
+        const platformService = require(platformServiceMappingConfig[_platformId]).default;
 
         log.info(`Calling provider ${platformId}`);
+        console.log('====================================');
+        console.log(platformService);
+        console.log('====================================');
 
         const transactionResponse = await platformService.transact(
             _transactionRequest,
