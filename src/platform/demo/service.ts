@@ -28,7 +28,7 @@ class Service {
       playerId: playerId,
       playerName: playerId,
       currencyCode: currencyCode,
-      balance: constants["demoBalance"],
+      balance: constants["demoBalance"].toString(),
       otherParams: response,
     });
 
