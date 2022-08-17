@@ -12,7 +12,7 @@ if (!envFound) {
 export default {
   port: parseInt(process.env.PORT || '8080', 10),
 
-  isDev: !!process.env.IS_DEV,
+  isDev: process.env.IS_DEV == 'true',
 
   /**
    * Used by winston logger
