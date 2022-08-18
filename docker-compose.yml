@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  wagerbet-rgs:
+    image: wagerbet-rgs:latest
+    volumes:
+      - './logs:/app/logs'
+      - "./.env:/app/.env"
+    ports:
+      - '8081:8080'
