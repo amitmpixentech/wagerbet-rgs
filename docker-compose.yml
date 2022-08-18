@@ -3,8 +3,10 @@ version: '3.9'
 services:
   wagerbet-rgs:
     image: ${IMAGE}
+    entrypoint: /bin/sh './scripts/be-node-dev.sh'
     volumes:
       - './logs:/app/logs'
-      - './.env:/app/.env'
+    env_file:
+      - .env
     ports:
       - '8081:8080'

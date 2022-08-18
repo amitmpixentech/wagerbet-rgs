@@ -12,6 +12,7 @@ COPY package*.json ./
 COPY tsconfig.json ./
 # Bundle app source
 COPY src /app/src
+COPY scripts /app/scripts
 ENV NODE_ENV development
 
 RUN npm install
