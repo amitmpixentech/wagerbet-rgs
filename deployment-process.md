@@ -3,7 +3,7 @@
   <br>
 </h1>
 
-- ### Created the required folder
+- ### Create the required folder
 ```bash
 # ssh into the server
 $ ssh -i <path/to/wagerBet.pem> ubuntu@65.1.89.209
@@ -23,7 +23,7 @@ $ scp -i <path/to/wagerBet.pem> -Cpr .env.template ubuntu@65.1.89.209:/home/ubun
 $ scp -i <path/to/wagerBet.pem> -Cpr docker-compose.yml ubuntu@65.1.89.209:/home/ubuntu/docker-wagerbet-rgs/docker-compose.yml
 ```
 
-- Make changes in .env file
+- ### Make changes in .env file
 ```bash
 # ssh into the server
 # Open the .env file and put the values properly by removing the placeholders
@@ -42,7 +42,7 @@ $ sudo apt install amazon-ecr-credential-helper
 $ echo '{"credsStore": "ecr-login"}' | tee ~/.docker/config.json > /dev/null
 ```
 
-- Configure the aws cli with the IAM api user, if not done already
+- ### Configure the aws cli with the IAM api user, if not done already
 ```bash
 # To check if cli credentials are configured, check the access key and secret access key is added under ~/.aws/credentials and ~/.aws/config have the region value. If any of these are missing then run the below command to configure:
 
@@ -68,7 +68,7 @@ $\q
 ```
 
 - ### Create github secrets
-    - Create github secret for each variables below. Click [here](#How-to-create-github-secrets) for how to create github secrets.
+    - Create github secret for each variables below. Click [here](#how-to-create-github-action-secrets) for how to create github secrets.
     - Add the below variables one by one by clicking *New repository secret* everytime.
 	```bash
 	AWS_ACCESS_KEY_ID
